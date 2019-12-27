@@ -28,7 +28,7 @@ class GCodeHashTestMissingHash(unittest.TestCase):
 		# fHash = open("hash", "w")
 		# fHash.write("i")
 		# fHash.close()
-		fV3dpConfig = open("v3dpConfig", "w")
+		fV3dpConfig = open("v3DPConfig", "w")
 		fV3dpConfig.write("i")
 		fV3dpConfig.close()
 		fGCTests =  open("gCTests", "w")
@@ -38,7 +38,7 @@ class GCodeHashTestMissingHash(unittest.TestCase):
 	def tearDown(self):
 		rm("stl")
 		# rm("hash")
-		rm("v3dpConfig")
+		rm("v3DPConfig")
 		rm("gCTests")
 
 	def test100_500_hashFileMissing(self):
@@ -55,7 +55,7 @@ class GCodeHashTestMissingSTL(unittest.TestCase):
 		fHash = open("hash", "w")
 		fHash.write("i")
 		fHash.close()
-		fV3dpConfig = open("v3dpConfig", "w")
+		fV3dpConfig = open("v3DPConfig", "w")
 		fV3dpConfig.write("i")
 		fV3dpConfig.close()
 		fGCTests =  open("gCTests", "w")
@@ -65,7 +65,7 @@ class GCodeHashTestMissingSTL(unittest.TestCase):
 	def tearDown(self):
 		# rm("stl")
 		rm("hash")
-		rm("v3dpConfig")
+		rm("v3DPConfig")
 		rm("gCTests")
 
 	def test100_510_STLFileMissing(self):
@@ -82,7 +82,7 @@ class GCodeHashTestMissingV3DPConfig(unittest.TestCase):
 		fHash = open("hash", "w")
 		fHash.write("i")
 		fHash.close()
-		# fV3dpConfig = open("v3dpConfig", "w")
+		# fV3dpConfig = open("v3DPConfig", "w")
 		# fV3dpConfig.write("i")
 		# fV3dpConfig.close()
 		fGCTests =  open("gCTests", "w")
@@ -97,6 +97,33 @@ class GCodeHashTestMissingV3DPConfig(unittest.TestCase):
 
 	def test100_520_V3DPConfigFileMissing(self):
 		expectedResult = "output: ERROR: V3DPConfig file missing"
+		actualResult = gch()
+		self.assertEqual(expectedResult, actualResult)
+
+
+class GCodeHashTestMissingGCTests(unittest.TestCase):
+	def setUp(self):
+		fSTL =  open("stl", "w")
+		fSTL.write("i")
+		fSTL.close()
+		fHash = open("hash", "w")
+		fHash.write("i")
+		fHash.close()
+		fV3dpConfig = open("v3DPConfig", "w")
+		fV3dpConfig.write("i")
+		fV3dpConfig.close()
+		# fGCTests =  open("gCTests", "w")
+		# fGCTests.write("i")
+		# fGCTests.close()
+
+	def tearDown(self):
+		rm("stl")
+		rm("hash")
+		rm("v3DPConfig")
+		# rm("gCTests")
+
+	def test100_530_GCTestsFileMissing(self):
+		expectedResult = "output: ERROR: GCTests file missing"
 		actualResult = gch()
 		self.assertEqual(expectedResult, actualResult)
 
