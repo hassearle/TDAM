@@ -7,7 +7,7 @@
 '''
 
 import unittest
-import gGodeHash
+from gCodeHash import gch
 from os import remove as rm
 
 
@@ -21,11 +21,19 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 	# 	self.assertEqual(expectedResult, actualResult)
 
 class GCodeHashTestMissingHash(unittest.TestCase):
-	def setup(self):
-		fSTL =  open("sTLTemp", "w+")
+	def setUp(self):
+		fSTL =  open("sTLTemp", "w")
+		fSTL.write("i")
+		fSTL.close()
 		# fHash = open("hashTemp", "w+")
-		fV3dpConfig = open("v3dpConfigTemp", "w+")
-		fGCTests =  open("gCTestsTemp", "w+")
+		# fHash.write("i")
+		# fHash.close()
+		fV3dpConfig = open("v3dpConfigTemp", "w")
+		fV3dpConfig.write("i")
+		fV3dpConfig.close()
+		fGCTests =  open("gCTestsTemp", "w")
+		fGCTests.write("i")
+		fGCTests.close()
 
 	def tearDown(self):
 		rm("sTLTemp")
@@ -35,7 +43,7 @@ class GCodeHashTestMissingHash(unittest.TestCase):
 
 	def test100_500_hashFileMissing(self):
 		expectedResult = "output: ERROR: hash file misssing"
-		actualResult = gCodeHash.gch()
+		actualResult = gch()
 		self.assertEqual(expectedResult, actualResult)
 
 if __name__ == '__main__':
