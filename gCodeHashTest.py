@@ -37,12 +37,66 @@ class GCodeHashTestMissingHash(unittest.TestCase):
 
 	def tearDown(self):
 		rm("stl")
-		# rm("hashTemp")
+		# rm("hash")
 		rm("v3dpConfig")
 		rm("gCTests")
 
 	def test100_500_hashFileMissing(self):
 		expectedResult = "output: ERROR: hash file missing"
+		actualResult = gch()
+		self.assertEqual(expectedResult, actualResult)
+
+
+class GCodeHashTestMissingSTL(unittest.TestCase):
+	def setUp(self):
+		# fSTL =  open("stl", "w")
+		# fSTL.write("i")
+		# fSTL.close()
+		fHash = open("hash", "w")
+		fHash.write("i")
+		fHash.close()
+		fV3dpConfig = open("v3dpConfig", "w")
+		fV3dpConfig.write("i")
+		fV3dpConfig.close()
+		fGCTests =  open("gCTests", "w")
+		fGCTests.write("i")
+		fGCTests.close()
+
+	def tearDown(self):
+		# rm("stl")
+		rm("hash")
+		rm("v3dpConfig")
+		rm("gCTests")
+
+	def test100_510_STLFileMissing(self):
+		expectedResult = "output: ERROR: STL file missing"
+		actualResult = gch()
+		self.assertEqual(expectedResult, actualResult)
+
+
+class GCodeHashTestMissingV3DPConfig(unittest.TestCase):
+	def setUp(self):
+		fSTL =  open("stl", "w")
+		fSTL.write("i")
+		fSTL.close()
+		fHash = open("hash", "w")
+		fHash.write("i")
+		fHash.close()
+		# fV3dpConfig = open("v3dpConfig", "w")
+		# fV3dpConfig.write("i")
+		# fV3dpConfig.close()
+		fGCTests =  open("gCTests", "w")
+		fGCTests.write("i")
+		fGCTests.close()
+
+	def tearDown(self):
+		rm("stl")
+		rm("hash")
+		# rm("v3dpConfig")
+		rm("gCTests")
+
+	def test100_520_V3DPConfigFileMissing(self):
+		expectedResult = "output: ERROR: V3DPConfig file missing"
 		actualResult = gch()
 		self.assertEqual(expectedResult, actualResult)
 
