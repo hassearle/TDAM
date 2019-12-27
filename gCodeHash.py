@@ -9,6 +9,7 @@
 ERROR_HEADER = "ERROR: "
 OUTPUT_HEADER = "output: "
 ERROR01 = "hash file missing"
+ERROR02 = "STL file missing"
 
 def gch():
 	try:
@@ -16,6 +17,10 @@ def gch():
 			fHash = open("hash", "r")
 		except:
 			raise ValueError(ERROR01)
+		try:
+			fHash = open("stl", "r")
+		except:
+			raise ValueError(ERROR02)
 	except Exception as e:
 		result = OUTPUT_HEADER + ERROR_HEADER + e.args[0]
 
