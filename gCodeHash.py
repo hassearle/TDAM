@@ -11,6 +11,7 @@ OUTPUT_HEADER = "output: "
 ERROR01 = "hash file missing"
 ERROR02 = "STL file missing"
 ERROR03 = "V3DPConfig file missing"
+ERROR04 = "GCTests file missing"
 
 def gch():
 	try:
@@ -26,6 +27,10 @@ def gch():
 			fV3DPConfig = open("v3DPConfig", "r")
 		except:
 			raise ValueError(ERROR03)
+		try:
+			fGCTests = open("gcTests", "r")
+		except:
+			raise ValueError(ERROR04)
 	except Exception as e:
 		result = OUTPUT_HEADER + ERROR_HEADER + e.args[0]
 
