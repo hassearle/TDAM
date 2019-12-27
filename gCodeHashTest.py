@@ -22,27 +22,27 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 
 class GCodeHashTestMissingHash(unittest.TestCase):
 	def setUp(self):
-		fSTL =  open("sTLTemp", "w")
+		fSTL =  open("stl", "w")
 		fSTL.write("i")
 		fSTL.close()
-		# fHash = open("hashTemp", "w+")
+		# fHash = open("hash", "w")
 		# fHash.write("i")
 		# fHash.close()
-		fV3dpConfig = open("v3dpConfigTemp", "w")
+		fV3dpConfig = open("v3dpConfig", "w")
 		fV3dpConfig.write("i")
 		fV3dpConfig.close()
-		fGCTests =  open("gCTestsTemp", "w")
+		fGCTests =  open("gCTests", "w")
 		fGCTests.write("i")
 		fGCTests.close()
 
 	def tearDown(self):
-		rm("sTLTemp")
+		rm("stl")
 		# rm("hashTemp")
-		rm("v3dpConfigTemp")
-		rm("gCTestsTemp")
+		rm("v3dpConfig")
+		rm("gCTests")
 
 	def test100_500_hashFileMissing(self):
-		expectedResult = "output: ERROR: hash file misssing"
+		expectedResult = "output: ERROR: hash file missing"
 		actualResult = gch()
 		self.assertEqual(expectedResult, actualResult)
 
