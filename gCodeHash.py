@@ -6,6 +6,18 @@
     purpose:   validate the integrity of a STL file
 '''
 
+ERROR_HEADER = "ERROR: "
+OUTPUT_HEADER = "output: "
+ERROR01 = "hash file missing"
+
 def gch():
-	print("hello")
-	return "hello world"
+	try:
+		try:
+			fHash = open("hash", "r")
+		except:
+			raise ValueError(ERROR01)
+	except Exception as e:
+		result = OUTPUT_HEADER + ERROR_HEADER + e.args[0]
+
+
+	return result
