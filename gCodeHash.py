@@ -16,9 +16,11 @@ ERROR04 = "GCTests file missing"
 class V3dpos:
 	stl = "n/a"
 	objHash = "n/a"
-	def __init__ (self, stl_, hash_):
+	objV3dpConfig = "n/a"
+	def __init__ (self, stl_, hash_, v3dpConfig_):
 		self.stl = stl_
 		self.objHash = hash_
+		self.objV3dpConfig = v3dpConfig_
 
 def gch(flag):
 	result = 1
@@ -45,16 +47,21 @@ def gch(flag):
 
 	stlInput = ""
 	with open('inputFiles/stl.stl', 'r') as f:
-			stlInput += f.read()
+		stlInput += f.read()
 
 	hashInput = ""
 	with open('inputFiles/hash', 'r') as f:
-			hashInput += f.read()
+		hashInput += f.read()
 
-	v3dpos = V3dpos(stlInput,hashInput)
+	v3dpConfigInput = ""
+	with open('config/v3dpConfig', 'r') as f:
+		v3dpConfigInput += f.read()
+
+	v3dpos = V3dpos(stlInput,hashInput,v3dpConfigInput)
 
 	if flag != 0:
-		rtn = {"status":result, "stl":v3dpos.stl, "hash":v3dpos.objHash}
+		rtn = {"status":result, "stl":v3dpos.stl, "hash":v3dpos.objHash, 
+			"v3dpConfig":v3dpos.objV3dpConfig}
 		return rtn
 	else:
 		return result
