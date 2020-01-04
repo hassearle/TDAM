@@ -13,7 +13,18 @@ ERROR02 = "STL file missing"
 ERROR03 = "V3DPConfig file missing"
 ERROR04 = "GCTests file missing"
 
-def gch():
+class V3dpos:
+	stl = "n/a"
+	def __init__ (self, stl_):
+		self.stl = stl_
+
+	@classmethod
+	def setSTL(cls, stl):
+		cls.stl = stl
+
+def gch(flag):
+	result = 1
+
 	try:
 		try:
 			fHash = open("hash", "r")
@@ -34,6 +45,20 @@ def gch():
 	except Exception as e:
 		result = OUTPUT_HEADER + ERROR_HEADER + e.args[0]
 
+	stlInput = ""
+	with open('inputFiles/stl.stl', 'r') as f:
+			stlInput += f.read()
 
+	v3dpos = V3dpos(stlInput)
 
-	return result
+	if flag != 0:
+		rtn = {"status":result, "stl":v3dpos.stl}
+		return rtn
+	else:
+		return result
+
+# stlInput = ""
+# with open('inputFiles/stl.stl', 'r') as f:
+# 	stlInput += f.read()
+# ash = V3dpos(stlInput)
+# print(ash.stl)
