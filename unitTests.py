@@ -64,6 +64,15 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 		actualResult = result["v3dpConfig"]
 		self.assertEqual(expectedResult, actualResult)
 
+	def test100_130_NominalGCTests(self):
+		expectedResult = ""
+		with open('stlFiles/testGCTests.py', 'r') as f:
+			expectedResult += f.read()
+
+		result = gCodeHash.gch(5)
+		actualResult = result["gCTests"]
+		self.assertEqual(expectedResult, actualResult)
+
 		# h = sha512()
 		# h.update(stl)
 		# hash_ = h.hexdigest()

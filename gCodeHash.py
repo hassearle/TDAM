@@ -1,7 +1,7 @@
 '''
     author:    Ash Searle    kss0024@auburn.edu
     created:   12/27/19
-    updated:   12/27/19
+    updated:   1/4/20
     
     purpose:   validate the integrity of a STL file
 '''
@@ -17,10 +17,12 @@ class V3dpos:
 	stl = "n/a"
 	objHash = "n/a"
 	objV3dpConfig = "n/a"
-	def __init__ (self, stl_, hash_, v3dpConfig_):
+	objGCTests = "n/a"
+	def __init__ (self, stl_, hash_, v3dpConfig_, gCTests_):
 		self.stl = stl_
 		self.objHash = hash_
 		self.objV3dpConfig = v3dpConfig_
+		self.objGCTests = gCTests_
 
 def gch(flag):
 	result = 1
@@ -57,11 +59,18 @@ def gch(flag):
 	with open('config/v3dpConfig', 'r') as f:
 		v3dpConfigInput += f.read()
 
-	v3dpos = V3dpos(stlInput,hashInput,v3dpConfigInput)
+	gCTestsInput = ""
+	with open('config/gCTests.py', 'r') as f:
+		gCTestsInput += f.read()
+
+	v3dpos = V3dpos(stlInput,hashInput,v3dpConfigInput,gCTestsInput)
 
 	if flag != 0:
-		rtn = {"status":result, "stl":v3dpos.stl, "hash":v3dpos.objHash, 
-			"v3dpConfig":v3dpos.objV3dpConfig}
+		rtn = {"status":result,
+			"stl":v3dpos.stl,
+			"hash":v3dpos.objHash, 
+			"v3dpConfig":v3dpos.objV3dpConfig,
+			"gCTests":v3dpos.objGCTests}
 		return rtn
 	else:
 		return result
