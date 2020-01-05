@@ -6,6 +6,8 @@
     purpose:   validate the integrity of a STL file
 '''
 
+import subprocess
+
 ERROR_HEADER = "ERROR: "
 STATUS_HEADER = "status: "
 STATUS_POSITIVE = "ok"
@@ -13,6 +15,8 @@ ERROR01 = "hash file missing"
 ERROR02 = "STL file missing"
 ERROR03 = "V3DPConfig file missing"
 ERROR04 = "GCTests file missing"
+ERROR05 = "sliced STL GCode failed GCTests"
+GCTESTS_PATH = "config/gCTests.py"
 
 class V3dpos:
 	objStatus = "n/a"
@@ -20,12 +24,23 @@ class V3dpos:
 	objHash = "n/a"
 	objV3dpConfig = "n/a"
 	objGCTests = "n/a"
+	objGCode = "n/a"
 	def __init__ (self, status_, stl_, hash_, v3dpConfig_, gCTests_):
 		self.objStatus = status_
 		self.objStl = stl_
 		self.objHash = hash_
 		self.objV3dpConfig = v3dpConfig_
 		self.objGCTests = gCTests_
+
+	@classmethod
+	def setGCode(cls, gcode_):
+		cls.objGCode = gcode_
+
+	@classmethod
+	def setStatus(cls, status_):
+		cls.objStatus = status_
+
+
 
 def gch(flag):
 	if flag != 0:
@@ -38,30 +53,30 @@ def gch(flag):
 	else:
 		return result
 
-def validateParms(stl_, hash_, v3dpConfig_, gCTests_):
+def validateParms():
 	try:
 		try:
 			hashInput = ""
 			with open('inputFiles/hash', 'r') as f:
-				hashInput += f.read()
+				hashInput = f.read()
 		except:
 			raise ValueError(ERROR01)
 		try:
 			stlInput = ""
-			with open('inputFiles/stl.stl', 'r') as f:
-				stlInput += f.read()
+			with open('inputFiles/stl.stl', 'rb') as f:
+				stlInput = f.read()
 		except:
 			raise ValueError(ERROR02)
 		try:
 			v3dpConfigInput = ""
 			with open('config/v3dpConfig', 'r') as f:
-				v3dpConfigInput += f.read()
+				v3dpConfigInput = f.read()
 		except:
 			raise ValueError(ERROR03)
 		try:
 			gCTestsInput = ""
 			with open('config/gCTests.py', 'r') as f:
-				gCTestsInput += f.read()
+				gCTestsInput = f.read()
 		except:
 			raise ValueError(ERROR04)
 	except Exception as e:
@@ -70,15 +85,28 @@ def validateParms(stl_, hash_, v3dpConfig_, gCTests_):
 	else:
 		status = STATUS_POSITIVE
 
-	rtn = V3dpos(status,stlInput,hashInput,v3dpConfigInput,gCTestsInput)
-	result = {"status":rtn.objStatus,
-			"stl":rtn.objStl,
-			"hash":rtn.objHash, 
-			"v3dpConfig":rtn.objV3dpConfig,
-			"gCTests":rtn.objGCTests}
+	result = V3dpos(status,stlInput,hashInput,v3dpConfigInput,gCTestsInput)
+	# result = {"status":rtn.objStatus,
+	# 	"stl":rtn.objStl,
+	# 	"hash":rtn.objHash, 
+	# 	"v3dpConfig":rtn.objV3dpConfig,
+	# 	"gCTests":rtn.objGCTests}
 
 	return result
 
+def validateGCode(v3dpos):
+	try:
+		try:
+			subprocess.run(["python " + GCTESTS_PATH, v3dpos.objGCode], check=True)
+		except:
+			raise ValueError(ERROR05)
+	except Exception as e:
+		status = ERROR_HEADER + e.args[0]
+		result = v3dpos.setStatus(status)
+		return result
+	else:
+		result = v3dpos
+		return result
 # stlInput = ""
 # with open('inputFiles/stl.stl', 'r') as f:
 # 	stlInput += f.read()
