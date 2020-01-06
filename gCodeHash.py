@@ -16,6 +16,7 @@ ERROR02 = "STL file missing"
 ERROR03 = "V3DPConfig file missing"
 ERROR04 = "GCTests file missing"
 ERROR05 = "sliced STL GCode failed GCTests"
+PYTHON_EXE = "python3"
 GCTESTS_PATH = "config/gCTests.py"
 
 class V3dpos:
@@ -95,14 +96,12 @@ def validateParms():
 	return result
 
 def validateGCode(v3dpos):
-	try:
-		try:
-			subprocess.run(["python " + GCTESTS_PATH, v3dpos.objGCode], check=True)
-		except:
-			raise ValueError(ERROR05)
-	except Exception as e:
-		status = ERROR_HEADER + e.args[0]
-		result = v3dpos.setStatus(status)
+	testsOutput = subprocess.run([PYTHON_EXE, GCTESTS_PATH], universal_newlines=True, 
+		stdout=subprocess.PIPE, stderr=subprocess.PIPE)#, v3dpos.objGCode])
+	if "FAILED" in testsOutput.stderr:
+		status = ERROR_HEADER + ERROR05
+		v3dpos.objStatus = status
+		result = v3dpos
 		return result
 	else:
 		result = v3dpos
