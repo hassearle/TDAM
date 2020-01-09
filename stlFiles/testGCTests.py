@@ -7,8 +7,11 @@
 '''
 
 import unittest
+import sys
 
 class V3DPTestCases(unittest.TestCase):
+	GCODE_INPUT = ""
+
 	def setUp(self):
 		pass
 
@@ -19,4 +22,6 @@ class V3DPTestCases(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+	if len(sys.argv) > 1:
+		V3DPTestCases.GCODE_INPUT = sys.argv.pop()
+	unittest.main()

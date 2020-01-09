@@ -43,16 +43,17 @@ class V3dpos:
 
 
 
-def gch(flag):
-	if flag != 0:
-		rtn = {"output":result,
-			"stl":v3dpos.objStl,
-			"hash":v3dpos.objHash, 
-			"v3dpConfig":v3dpos.objV3dpConfig,
-			"gCTests":v3dpos.objGCTests}
-		return rtn
-	else:
-		return result
+def gch():
+	# if flag != 0:
+	result = validateParms()
+	rtn = {"status":result.objStatus,
+		"stl":result.objStl,
+		"hash":result.objHash, 
+		"v3dpConfig":result.objV3dpConfig,
+		"gCTests":result.objGCTests}
+	return rtn
+	# else:
+	# 	return result
 
 def validateParms():
 	try:

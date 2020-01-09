@@ -92,7 +92,8 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 		actualResult = result["gCTests"]
 		self.assertEqual(expectedResult, actualResult)
 
-	def test200_900_FailsGCTests(self):
+	@unittest.SkipTest
+	def test200_500_FailsGCTests(self):
 		expectedResult ='ERROR: sliced STL GCode failed GCTests'
 		gcode = ""
 		with open(GCODE_PATH, 'r') as f:
@@ -133,7 +134,10 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 		self.assertEqual(expectedResult, actualResult)
 
 	def test400_900_gCodeFileMissingAfterSlicing(self):
-		pass
+		expectedResult = 'ERROR: could not slice STL'
+		obj = gCodeHash.validateParms()
+		gcode = gCodeHash.sliceSTLToGCode(obj.objStl)
+		
 
 	# sliceSTLToGCode
 

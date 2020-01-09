@@ -12,13 +12,28 @@ from os import remove as rm
 
 
 class GCodeHashTestNominalSetup(unittest.TestCase):
-	def setup():
+	def setup(self):
+		fSTL =  open("stl", "r")
+		fHash = open("hash", "r")
+		fV3dpConfig = open("v3DPConfig", "r")
+		fGCTests =  open("gCTests", "r")
+
+	def tearDown(self):
 		pass
-		
-	# def test100_500_hashFileMissing(self):
-	# 	expectedResult = "output: ERROR: hash file misssing"
+		# fSTL.close()
+		# fHash.close()
+		# fV3dpConfig.close()
+		# fGCTests.close()
+
+	# def test100_540_hashFileCorrupted(self):
+	# 	expectedResult = "output: ERROR: hash file corrupted or cant be opened"
 	# 	actualResult = gCodeHash.gch()
 	# 	self.assertEqual(expectedResult, actualResult)
+
+	def test100_150_NominalSTLHashPassesGCodeTestCases(self):
+		pass
+
+
 
 class GCodeHashTestMissingHash(unittest.TestCase):
 	def setUp(self):
@@ -41,6 +56,7 @@ class GCodeHashTestMissingHash(unittest.TestCase):
 		rm("v3DPConfig")
 		rm("gCTests")
 
+	@unittest.SkipTest
 	def test100_500_hashFileMissing(self):
 		expectedResult = "output: ERROR: hash file missing"
 		actualResult = gch()
@@ -68,6 +84,7 @@ class GCodeHashTestMissingSTL(unittest.TestCase):
 		rm("v3DPConfig")
 		rm("gCTests")
 
+	@unittest.SkipTest
 	def test100_510_STLFileMissing(self):
 		expectedResult = "output: ERROR: STL file missing"
 		actualResult = gch()
@@ -95,6 +112,7 @@ class GCodeHashTestMissingV3DPConfig(unittest.TestCase):
 		# rm("v3dpConfig")
 		rm("gCTests")
 
+	@unittest.SkipTest
 	def test100_520_V3DPConfigFileMissing(self):
 		expectedResult = "output: ERROR: V3DPConfig file missing"
 		actualResult = gch()
@@ -122,6 +140,7 @@ class GCodeHashTestMissingGCTests(unittest.TestCase):
 		rm("v3DPConfig")
 		# rm("gCTests")
 
+	@unittest.SkipTest
 	def test100_530_GCTestsFileMissing(self):
 		expectedResult = "output: ERROR: GCTests file missing"
 		actualResult = gch()
