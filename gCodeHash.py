@@ -8,6 +8,10 @@
 
 import subprocess
 
+#temp
+from pprint import pprint
+#
+
 ERROR_HEADER = "ERROR: "
 STATUS_KEY = "status"
 STATUS_POSITIVE = "ok"
@@ -29,11 +33,11 @@ STL_EXTENSION = ".stl"
 GCODE_EXTENSION = ".gcode"
 
 SLIC3R_PATH = "/home/has/Documents/Thesis/code/stlFiles/"
-GCTESTS_PATH = "config/gCTests.py"
-HASH_PATH = 'inputFiles/hash'
-STL_PATH = 'inputFiles/stl.stl'
-V3DP_CONFIG_PATH = 'config/v3dpConfig'
-GCODE_TESTS_PATH = 'config/gCTests.py'
+GCTESTS_PATH = "/home/has/Documents/Thesis/code/config/gCTests.py"
+HASH_PATH = '/home/has/Documents/Thesis/code/inputFiles/hash'
+STL_PATH = '/home/has/Documents/Thesis/code/inputFiles/stl.stl'
+V3DP_CONFIG_PATH = '/home/has/Documents/Thesis/code/config/v3dpConfig'
+GCODE_TESTS_PATH = '/home/has/Documents/Thesis/code/config/gCTests.py'
 
 class V3dpos:
 	objStatus = "n/a"
@@ -136,10 +140,11 @@ def sliceSTLToGCode(stl_):
 		return result
 	else:
 		result[STATUS_KEY] = STATUS_POSITIVE
-		result['gcode'] = stl_ + GCODE_EXTENSION
+		result['gcode'] = stl_[:-4] + GCODE_EXTENSION
 		return result
 
 def dev():
 	ash = validateParms()
+	pprint(vars(ash))
 	has = sliceSTLToGCode(ash.objStl)
 	print(has)

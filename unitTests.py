@@ -139,6 +139,7 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 		stlParmPath = obj.objStl
 		expectedResult = 'ok'
 		gcode = gCodeHash.sliceSTLToGCode(stlParmPath)
+		print(gcode)
 		actualResult = gcode['status']
 		self.assertEqual(expectedResult, actualResult)
 
