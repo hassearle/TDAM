@@ -1,7 +1,7 @@
 '''
     author:    Ash Searle    kss0024@auburn.edu
     created:   12/27/19
-    updated:   1/4/20
+    updated:   1/9/20
     
     purpose:   validate the integrity of a STL file
 '''
@@ -9,15 +9,31 @@
 import subprocess
 
 ERROR_HEADER = "ERROR: "
-STATUS_HEADER = "status: "
+STATUS_KEY = "status "
 STATUS_POSITIVE = "ok"
+
 ERROR01 = "hash file missing"
 ERROR02 = "STL file missing"
 ERROR03 = "V3DPConfig file missing"
 ERROR04 = "GCTests file missing"
 ERROR05 = "sliced STL GCode failed GCTests"
+ERROR06 = "slicer could not slice stl file"
+
 PYTHON_EXE = "python3"
+PERL_EXE = "perl"
+SLIC3R_EXE = "/home/has/Slic3r/slic3r.pl"
+
+# FILE_NAME = "stl"
+FILE_NAME = "testSTL"
+STL_EXTENSION = ".stl"
+GCODE_EXTENSION = ".gcode"
+
+SLIC3R_PATH = "/home/has/Documents/Thesis/code/stlFiles/"
 GCTESTS_PATH = "config/gCTests.py"
+HASH_PATH = 'inputFiles/hash'
+STL_PATH = 'inputFiles/stl.stl'
+V3DP_CONFIG_PATH = 'config/v3dpConfig'
+GCODE_TESTS_PATH = 'config/gCTests.py'
 
 class V3dpos:
 	objStatus = "n/a"
@@ -46,7 +62,7 @@ class V3dpos:
 def gch():
 	# if flag != 0:
 	result = validateParms()
-	rtn = {"status":result.objStatus,
+	rtn = {STATUS_KEY:result.objStatus,
 		"stl":result.objStl,
 		"hash":result.objHash, 
 		"v3dpConfig":result.objV3dpConfig,
@@ -59,25 +75,25 @@ def validateParms():
 	try:
 		try:
 			hashInput = ""
-			with open('inputFiles/hash', 'r') as f:
+			with open(HASH_PATH, 'r') as f:
 				hashInput = f.read()
 		except:
 			raise ValueError(ERROR01)
 		try:
 			stlInput = ""
-			with open('inputFiles/stl.stl', 'rb') as f:
+			with open(STL_PATH, 'rb') as f:
 				stlInput = f.read()
 		except:
 			raise ValueError(ERROR02)
 		try:
 			v3dpConfigInput = ""
-			with open('config/v3dpConfig', 'r') as f:
+			with open(V3DP_CONFIG_PATH, 'r') as f:
 				v3dpConfigInput = f.read()
 		except:
 			raise ValueError(ERROR03)
 		try:
 			gCTestsInput = ""
-			with open('config/gCTests.py', 'r') as f:
+			with open(GCODE_TESTS_PATH, 'r') as f:
 				gCTestsInput = f.read()
 		except:
 			raise ValueError(ERROR04)
@@ -87,7 +103,7 @@ def validateParms():
 	else:
 		status = STATUS_POSITIVE
 
-	result = V3dpos(status,stlInput,hashInput,v3dpConfigInput,gCTestsInput)
+	result = V3dpos(status,STL_PATH,HASH_PATH,V3DP_CONFIG_PATH,GCODE_TESTS_PATH)
 	# result = {"status":rtn.objStatus,
 	# 	"stl":rtn.objStl,
 	# 	"hash":rtn.objHash, 
@@ -107,8 +123,23 @@ def validateGCode(v3dpos):
 	else:
 		result = v3dpos
 		return result
-# stlInput = ""
-# with open('inputFiles/stl.stl', 'r') as f:
-# 	stlInput += f.read()
-# ash = V3dpos(stlInput)
-# print(ash.stl)
+
+def sliceSTLToGCode(stl_):
+	result = {STATUS_KEY: "n/a", 'gcode': "n/a"}
+	test = [PERL_EXE, SLIC3R_EXE, SLIC3R_PATH + FILE_NAME + STL_EXTENSION]
+	print(test)
+	slic3r = subprocess.run(test, universal_newlines=True, 
+		stdout=subprocess.PIPE, stderr=subprocess.PIPE)#, v3dpos.objGCode])
+	if "Done." not in slic3r.stderr:
+		status = ERROR_HEADER + ERROR06
+		result[STATUS_KEY] = slic3r.stderr#status
+		return result
+	else:
+		result[STATUS_KEY] = STATUS_POSITIVE
+		result['gcode'] = slic3r.stdout
+		return result
+
+def dev():
+	ash = validateParms()
+	has = sliceSTLToGCode(ash.objStl)
+	print(has)

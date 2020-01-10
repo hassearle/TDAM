@@ -1,7 +1,7 @@
 '''
     author:    Ash Searle    kss0024@auburn.edu
     created:   1/3/20
-    updated:   1/3/20
+    updated:   1/9/20
     
     purpose:   gCodeHash unit tests
 '''
@@ -105,6 +105,7 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 		actualResult = result.objStatus
 		self.assertEqual(expectedResult, actualResult)
 
+	@unittest.SkipTest
 	def test300_200_validateParms(self):
 		stl_ = ""
 		with open('stlFiles/testSTL.stl', 'rb') as f:
@@ -133,11 +134,15 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 			"gCTests":result.objGCTests}
 		self.assertEqual(expectedResult, actualResult)
 
-	def test400_900_gCodeFileMissingAfterSlicing(self):
-		expectedResult = 'ERROR: could not slice STL'
+	def test400_100_sliceSTLToGCode(self):
 		obj = gCodeHash.validateParms()
-		gcode = gCodeHash.sliceSTLToGCode(obj.objStl)
-		
+		stlParmPath = obj.objStl
+		expectedResult = 'ok'
+		gcode = gCodeHash.sliceSTLToGCode(stlParmPath)
+		actualResult = gcode['status']
+		self.assertEqual(expectedResult, actualResult)
+
+
 
 	# sliceSTLToGCode
 
