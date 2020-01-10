@@ -9,7 +9,7 @@
 import subprocess
 
 ERROR_HEADER = "ERROR: "
-STATUS_KEY = "status "
+STATUS_KEY = "status"
 STATUS_POSITIVE = "ok"
 
 ERROR01 = "hash file missing"
@@ -130,13 +130,13 @@ def sliceSTLToGCode(stl_):
 	print(test)
 	slic3r = subprocess.run(test, universal_newlines=True, 
 		stdout=subprocess.PIPE, stderr=subprocess.PIPE)#, v3dpos.objGCode])
-	if "Done." not in slic3r.stderr:
+	if "Done." not in slic3r.stdout:
 		status = ERROR_HEADER + ERROR06
-		result[STATUS_KEY] = slic3r.stderr#status
+		result[STATUS_KEY] = status
 		return result
 	else:
 		result[STATUS_KEY] = STATUS_POSITIVE
-		result['gcode'] = slic3r.stdout
+		result['gcode'] = stl_ + GCODE_EXTENSION
 		return result
 
 def dev():
