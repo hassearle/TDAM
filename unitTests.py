@@ -17,6 +17,7 @@ from pprint import pprint
 #200: GCodeTests
 #300: validateParams
 #400: sliceSTLToGCode
+#500: validateGCode
 
 # 1##:	happy path test case
 # 1#1:	similarly grouped test case
@@ -139,10 +140,17 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 		stlParmPath = obj.objStl
 		expectedResult = 'ok'
 		gcode = gCodeHash.sliceSTLToGCode(stlParmPath)
-		print(gcode)
 		actualResult = gcode['status']
 		self.assertEqual(expectedResult, actualResult)
 
+	def test500_900_SPSliceSTLToGCode(self):
+		obj = gCodeHash.validateParms()
+		badSTL = '/home/has/Documents/Thesis/code/stl.stl'
+		obj.objStl = badSTL
+		expectedResult = gCodeHash.ERROR_HEADER + gCodeHash.ERROR06
+		result = gCodeHash.validateGCode(obj)
+		actualResult = result.objStatus
+		self.assertEqual(expectedResult, actualResult)
 
 
 	# sliceSTLToGCode

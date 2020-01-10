@@ -14,6 +14,7 @@ from pprint import pprint
 
 ERROR_HEADER = "ERROR: "
 STATUS_KEY = "status"
+GCODE_KEY = "gcode"
 STATUS_POSITIVE = "ok"
 
 ERROR01 = "hash file missing"
@@ -116,7 +117,35 @@ def validateParms():
 
 	return result
 
-def validateGCode(v3dpos):
+def validateGCode(v3dpos_):
+	result = v3dpos_
+	inputSTL = result.objStl
+	tmp = sliceSTLToGCode(inputSTL)
+	outputStatus = tmp[STATUS_KEY]
+	outputGCode = tmp[GCODE_KEY]
+	if outputStatus != STATUS_POSITIVE:
+		result.objStatus = outputStatus
+	# else:
+	# 	result.objStatus = outputStatus
+	# 	result.objGCode = outputGCode
+
+	return result
+
+def sliceSTLToGCode(stl_):
+	result = {STATUS_KEY: "n/a", GCODE_KEY: "n/a"}
+	test = [PERL_EXE, SLIC3R_EXE, stl_]
+	slic3r = subprocess.run(test, universal_newlines=True, 
+		stdout=subprocess.PIPE, stderr=subprocess.PIPE)#, v3dpos.objGCode])
+	if "Done." not in slic3r.stdout:
+		status = ERROR_HEADER + ERROR06
+		result[STATUS_KEY] = status
+		return result
+	else:
+		result[STATUS_KEY] = STATUS_POSITIVE
+		result[GCODE_KEY] = stl_[:-4] + GCODE_EXTENSION
+		return result
+
+def gCodeTests(objGCode_):
 	testsOutput = subprocess.run([PYTHON_EXE, GCTESTS_PATH], universal_newlines=True, 
 		stdout=subprocess.PIPE, stderr=subprocess.PIPE)#, v3dpos.objGCode])
 	if "FAILED" in testsOutput.stderr:
@@ -126,21 +155,6 @@ def validateGCode(v3dpos):
 		return result
 	else:
 		result = v3dpos
-		return result
-
-def sliceSTLToGCode(stl_):
-	result = {STATUS_KEY: "n/a", 'gcode': "n/a"}
-	test = [PERL_EXE, SLIC3R_EXE, SLIC3R_PATH + FILE_NAME + STL_EXTENSION]
-	print(test)
-	slic3r = subprocess.run(test, universal_newlines=True, 
-		stdout=subprocess.PIPE, stderr=subprocess.PIPE)#, v3dpos.objGCode])
-	if "Done." not in slic3r.stdout:
-		status = ERROR_HEADER + ERROR06
-		result[STATUS_KEY] = status
-		return result
-	else:
-		result[STATUS_KEY] = STATUS_POSITIVE
-		result['gcode'] = stl_[:-4] + GCODE_EXTENSION
 		return result
 
 def dev():
