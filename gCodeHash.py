@@ -125,9 +125,9 @@ def validateGCode(v3dpos_):
 	outputGCode = tmp[GCODE_KEY]
 	if outputStatus != STATUS_POSITIVE:
 		result.objStatus = outputStatus
-	# else:
-	# 	result.objStatus = outputStatus
-	# 	result.objGCode = outputGCode
+	else:
+		result.objStatus = outputStatus
+		result.objGCode = outputGCode
 
 	return result
 

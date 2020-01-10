@@ -152,6 +152,17 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 		actualResult = result.objStatus
 		self.assertEqual(expectedResult, actualResult)
 
+	def test500_110_HPSliceSTLToGCode(self):
+		obj = gCodeHash.validateParms()
+		expectedResult = gCodeHash.STATUS_POSITIVE
+		result = gCodeHash.validateGCode(obj)
+		actualResult = result.objStatus
+		self.assertEqual(expectedResult, actualResult)
+		notExpectedGCode = "n/a"
+		actualGCode = result.objGCode
+		self.assertNotEqual(notExpectedGCode, actualGCode)
+
+
 
 	# sliceSTLToGCode
 
