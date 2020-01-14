@@ -23,6 +23,7 @@ ERROR03 = "V3DPConfig file missing"
 ERROR04 = "GCTests file missing"
 ERROR05 = "sliced STL GCode failed GCTests"
 ERROR06 = "slicer could not slice stl file"
+ERROR07 = "input not a GCode file"
 
 PYTHON_EXE = "python3"
 PERL_EXE = "perl"
@@ -61,8 +62,6 @@ class V3dpos:
 	@classmethod
 	def setStatus(cls, status_):
 		cls.objStatus = status_
-
-
 
 def gch():
 	# if flag != 0:
@@ -120,14 +119,30 @@ def validateParms():
 def validateGCode(v3dpos_):
 	result = v3dpos_
 	inputSTL = result.objStl
-	tmp = sliceSTLToGCode(inputSTL)
-	outputStatus = tmp[STATUS_KEY]
-	outputGCode = tmp[GCODE_KEY]
-	if outputStatus != STATUS_POSITIVE:
-		result.objStatus = outputStatus
+	
+	# getGCode = sliceSTLToGCode(inputSTL)
+	# gcodeStatus = getGCode[STATUS_KEY]
+	# gCode = getGCode[GCODE_KEY]
+	# gCodeTestResults = gCodeTests(gCode)
+	
+	# if gcodeStatus != STATUS_POSITIVE:
+	# 	result.objStatus = gcodeStatus
+	# elif gCodeTestResults != STATUS_POSITIVE:
+	# 	result.objStatus = gCodeTestResults
+	# else:
+	# 	result.objStatus = gcodeStatus
+	# 	result.objGCode = gCode
+
+	try:
+		getGCode = sliceSTLToGCode(inputSTL)
+		gcodeStatus = getGCode[STATUS_KEY]
+		gCode = getGCode[GCODE_KEY]
+		gCodeTestResults = gCodeTests(gCode)
+	except Exception as e:
+		result.objStatus = ERROR_HEADER + e.args[0]
 	else:
-		result.objStatus = outputStatus
-		result.objGCode = outputGCode
+		result.objStatus = gcodeStatus
+		result.objGCode = gCode
 
 	return result
 
@@ -135,30 +150,59 @@ def sliceSTLToGCode(stl_):
 	result = {STATUS_KEY: "n/a", GCODE_KEY: "n/a"}
 	test = [PERL_EXE, SLIC3R_EXE, stl_]
 	slic3r = subprocess.run(test, universal_newlines=True, 
-		stdout=subprocess.PIPE, stderr=subprocess.PIPE)#, v3dpos.objGCode])
+		stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	if "Done." not in slic3r.stdout:
-		status = ERROR_HEADER + ERROR06
-		result[STATUS_KEY] = status
-		return result
+		# status = ERROR_HEADER + ERROR06
+		# result[STATUS_KEY] = status
+		# return result
+		raise ValueError(ERROR06)
 	else:
 		result[STATUS_KEY] = STATUS_POSITIVE
 		result[GCODE_KEY] = stl_[:-4] + GCODE_EXTENSION
 		return result
 
 def gCodeTests(objGCode_):
-	testsOutput = subprocess.run([PYTHON_EXE, GCTESTS_PATH], universal_newlines=True, 
-		stdout=subprocess.PIPE, stderr=subprocess.PIPE)#, v3dpos.objGCode])
-	if "FAILED" in testsOutput.stderr:
-		status = ERROR_HEADER + ERROR05
-		v3dpos.objStatus = status
-		result = v3dpos
-		return result
+	status = "n/a"
+
+	try:
+		gCTestsInput = ""
+		with open(objGCode_, 'rb') as f:
+			gCTestsInput = f.read()
+	except:
+		raise ValueError(ERROR04)
+
+	if not objGCode_.lower().endswith(('.gcode')):
+		raise ValueError(ERROR07)
+
+	testsOutput = subprocess.run([PYTHON_EXE, GCTESTS_PATH, gCTestsInput],
+		universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	
+	# print(objGCode_)
+	# print(testsOutput.stdout)
+
+	if "OK" not in testsOutput.stderr:
+		# error = ERROR_HEADER + ERROR05
+		# status = error
+		# return status
+		print("stdout:\n" + testsOutput.stdout)
+		print("stderr:\n" + testsOutput.stderr)		
+		raise ValueError(testsOutput.stdout + ERROR05)
 	else:
-		result = v3dpos
-		return result
+		status = STATUS_POSITIVE #testsOutput.stdout
+		return status
 
 def dev():
 	ash = validateParms()
 	pprint(vars(ash))
-	has = sliceSTLToGCode(ash.objStl)
-	print(has)
+	badGCode = '/home/has/Documents/Thesis/code/stl.stl'
+	ash.objGCode = badGCode
+	has = gCodeTests(ash.objGCode)
+	pprint(vars(has))
+
+	# badGCode = ""
+	gcode = has.objGCode
+	# result = gCodeTests(gcode)
+	expectedResult = ERROR_HEADER + ERROR05
+	# actualResult = result[STATUS_KEY]
+	print("expected result:\n" + expectedResult)
+	# print("actual result:\n" + actualResult)

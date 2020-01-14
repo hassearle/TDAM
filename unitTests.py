@@ -152,7 +152,7 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 		actualResult = result.objStatus
 		self.assertEqual(expectedResult, actualResult)
 
-	def test500_110_HPSliceSTLToGCode(self):
+	def test500_101_HPSliceSTLToGCode(self):
 		obj = gCodeHash.validateParms()
 		expectedResult = gCodeHash.STATUS_POSITIVE
 		result = gCodeHash.validateGCode(obj)
@@ -161,6 +161,25 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 		notExpectedGCode = "n/a"
 		actualGCode = result.objGCode
 		self.assertNotEqual(notExpectedGCode, actualGCode)
+
+	def test500_910_SPGCodeTests(self):
+		obj = gCodeHash.validateParms()
+		badGCode = '/home/has/Documents/Thesis/code/stlFiles/testSTL.stl'
+		obj.objGCode = badGCode
+		expectedResult = gCodeHash.ERROR_HEADER + gCodeHash.ERROR07
+		try: 
+			gCodeHash.gCodeTests(obj.objGCode)
+		except Exception as e:
+			result = gCodeHash.ERROR_HEADER + e.args[0]
+		actualResult = result
+		self.assertEqual(expectedResult, actualResult)
+
+		# badGCode = ""
+		# result = gCodeHash.gCodeTests(badGCode)
+		# expectedResult = gCodeHash.ERROR_HEADER + gCodeHash.ERROR05
+		# actualResult = result[gCodeHash.STATUS_KEY]
+		# self.assertEqual(expectedResult, actualResult)
+
 
 
 
