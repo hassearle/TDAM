@@ -24,6 +24,7 @@ ERROR04 = "GCTests file missing"
 ERROR05 = "sliced STL GCode failed GCTests"
 ERROR06 = "slicer could not slice stl file"
 ERROR07 = "input not a GCode file"
+ERROR08 = "input not a STL file"
 
 PYTHON_EXE = "python3"
 PERL_EXE = "perl"
@@ -133,6 +134,9 @@ def sliceSTLToGCode(stl_):
 	test = [PERL_EXE, SLIC3R_EXE, stl_]
 	slic3r = subprocess.run(test, universal_newlines=True, 
 		stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+	# if not objGCode_.lower().endswith(('.stl')):
+	# 	raise ValueError(ERROR07)
 	if "Done." not in slic3r.stdout:
 		raise ValueError(ERROR06)
 	else:
@@ -156,9 +160,7 @@ def gCodeTests(objGCode_):
 	testsOutput = subprocess.run([PYTHON_EXE, GCTESTS_PATH, gCTestsInput],
 		universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-	if "OK" not in testsOutput.stderr:
-		print("stdout:\n" + testsOutput.stdout)
-		print("stderr:\n" + testsOutput.stderr)		
+	if "OK" not in testsOutput.stderr:	
 		raise ValueError(ERROR05)
 	else:
 		status = STATUS_POSITIVE #testsOutput.stdout
