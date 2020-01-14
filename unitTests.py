@@ -174,6 +174,15 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 		actualResult = result
 		self.assertEqual(expectedResult, actualResult)
 
+	def test500_111_HPGCodeTests(self):
+		expectedResult = gCodeHash.STATUS_POSITIVE
+		obj = gCodeHash.validateParms()
+		stl = gCodeHash.sliceSTLToGCode(obj.objStl)
+		gcodePath = stl[gCodeHash.GCODE_KEY]
+		actualResult = gCodeHash.gCodeTests(gcodePath)
+		self.assertEqual(expectedResult, actualResult)
+
+
 
 
 
