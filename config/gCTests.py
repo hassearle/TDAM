@@ -1,7 +1,7 @@
 '''
     author:    Ash Searle    kss0024@auburn.edu
     created:   12/27/19
-    updated:   1/10/20
+    updated:   1/14/20
     
     purpose:   validate the integrity of a STL file
 '''

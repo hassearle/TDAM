@@ -1,7 +1,7 @@
 '''
     author:    Ash Searle    kss0024@auburn.edu
     created:   1/3/20
-    updated:   1/9/20
+    updated:   1/14/20
     
     purpose:   gCodeHash unit tests
 '''
@@ -173,12 +173,6 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 			result = gCodeHash.ERROR_HEADER + e.args[0]
 		actualResult = result
 		self.assertEqual(expectedResult, actualResult)
-
-		# badGCode = ""
-		# result = gCodeHash.gCodeTests(badGCode)
-		# expectedResult = gCodeHash.ERROR_HEADER + gCodeHash.ERROR05
-		# actualResult = result[gCodeHash.STATUS_KEY]
-		# self.assertEqual(expectedResult, actualResult)
 
 
 

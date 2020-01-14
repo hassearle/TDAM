@@ -1,7 +1,7 @@
 '''
     author:    Ash Searle    kss0024@auburn.edu
     created:   12/27/19
-    updated:   1/9/20
+    updated:   1/14/20
     
     purpose:   validate the integrity of a STL file
 '''
@@ -108,30 +108,12 @@ def validateParms():
 		status = STATUS_POSITIVE
 
 	result = V3dpos(status,STL_PATH,HASH_PATH,V3DP_CONFIG_PATH,GCODE_TESTS_PATH)
-	# result = {"status":rtn.objStatus,
-	# 	"stl":rtn.objStl,
-	# 	"hash":rtn.objHash, 
-	# 	"v3dpConfig":rtn.objV3dpConfig,
-	# 	"gCTests":rtn.objGCTests}
 
 	return result
 
 def validateGCode(v3dpos_):
 	result = v3dpos_
 	inputSTL = result.objStl
-	
-	# getGCode = sliceSTLToGCode(inputSTL)
-	# gcodeStatus = getGCode[STATUS_KEY]
-	# gCode = getGCode[GCODE_KEY]
-	# gCodeTestResults = gCodeTests(gCode)
-	
-	# if gcodeStatus != STATUS_POSITIVE:
-	# 	result.objStatus = gcodeStatus
-	# elif gCodeTestResults != STATUS_POSITIVE:
-	# 	result.objStatus = gCodeTestResults
-	# else:
-	# 	result.objStatus = gcodeStatus
-	# 	result.objGCode = gCode
 
 	try:
 		getGCode = sliceSTLToGCode(inputSTL)
@@ -152,9 +134,6 @@ def sliceSTLToGCode(stl_):
 	slic3r = subprocess.run(test, universal_newlines=True, 
 		stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	if "Done." not in slic3r.stdout:
-		# status = ERROR_HEADER + ERROR06
-		# result[STATUS_KEY] = status
-		# return result
 		raise ValueError(ERROR06)
 	else:
 		result[STATUS_KEY] = STATUS_POSITIVE
@@ -176,17 +155,11 @@ def gCodeTests(objGCode_):
 
 	testsOutput = subprocess.run([PYTHON_EXE, GCTESTS_PATH, gCTestsInput],
 		universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	
-	# print(objGCode_)
-	# print(testsOutput.stdout)
 
 	if "OK" not in testsOutput.stderr:
-		# error = ERROR_HEADER + ERROR05
-		# status = error
-		# return status
 		print("stdout:\n" + testsOutput.stdout)
 		print("stderr:\n" + testsOutput.stderr)		
-		raise ValueError(testsOutput.stdout + ERROR05)
+		raise ValueError(ERROR05)
 	else:
 		status = STATUS_POSITIVE #testsOutput.stdout
 		return status
