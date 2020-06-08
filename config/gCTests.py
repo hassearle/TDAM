@@ -8,9 +8,12 @@
 
 import unittest
 import sys
+import re
 
 class V3DPTestCases(unittest.TestCase):
 	GCODE_INPUT = ""
+	TEMP = "M104"
+	TEMP_VAR = "200"
 
 	def setUp(self):
 		pass
@@ -19,13 +22,20 @@ class V3DPTestCases(unittest.TestCase):
 		expectedResult = True
 		actualResult = False
 
-		if "M104"  in self.GCODE_INPUT:
-			actualResult = True
-		self.assertEqual(expectedResult, actualResult)
-		# expectedResult = True
-		# actualResult = True if "top_solid_layers" in self.GCODE_INPUT else self.GCODE_INPUT
+		m = re.findall('(?<=M104)(.*)', self.GCODE_INPUT)
+		for element in m:
+			if self.TEMP_VAR in element:
+				actualResult = True
+			elif "S0" in element:
+				actualResult = True
+			else:
+				actualResult = False
+		
+		try:
+			self.assertEqual(expectedResult, actualResult)
+		except Exception as e:
+			raise ValueError("temp wrong")
 
-		# self.assertEqual(expectedResult, actualResult)
 
 
 if __name__ == '__main__':

@@ -182,7 +182,7 @@ class GCodeHashTestNominalSetup(unittest.TestCase):
 		actualResult = gCodeHash.gCodeTests(gcodePath)
 		self.assertEqual(expectedResult, actualResult)
 
-	def test500_120_validateGCode(self):
+	def test500_120_validateGCode_temp(self):
 		expectedResult = gCodeHash.STATUS_POSITIVE
 		tempResult = gCodeHash.validateParms()
 		tempResult1 = gCodeHash.validateGCode(tempResult)
