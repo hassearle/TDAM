@@ -157,13 +157,21 @@ def gCodeTests(objGCode_):
 	if not objGCode_.lower().endswith(('.gcode')):
 		raise ValueError(ERROR07)
 
-	testsOutput = subprocess.run([PYTHON_EXE, GCTESTS_PATH, gCTestsInput],
+	# testsOutput = subprocess.run([PYTHON_EXE, GCTESTS_PATH, gCTestsInput],
+	# 	universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	testsOutput = subprocess.run([PYTHON_EXE, GCTESTS_PATH, objGCode_],
 		universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
+
 	if "OK" not in testsOutput.stderr:	
-		raise ValueError(ERROR05)
+		print("test")
+		print(testsOutput.stderr)
+		raise ValueError(testsOutput.stderr)
+		# raise ValueError(ERROR05)
 	else:
-		status = STATUS_POSITIVE #testsOutput.stdout
+		# status = STATUS_POSITIVE #testsOutput.stdout
+		status = testsOutput.stdout
+		print(status)
 		return status
 
 def dev():
@@ -181,3 +189,31 @@ def dev():
 	# actualResult = result[STATUS_KEY]
 	print("expected result:\n" + expectedResult)
 	# print("actual result:\n" + actualResult)
+
+
+class tempClass:
+	objStl = "n/a"
+	def __init__ (self, objStl_):
+		self.objStl = objStl_
+# ash = validateParms()
+# pprint(vars(ash))
+# tempResult = validateParms()
+tempResult = tempClass('/home/has/Documents/Thesis/code/stlFiles/fan.gcode')
+tempResult1 = gCodeTests(tempResult.objStl)
+# parts = [""]
+# with open(tempResult.objStl, 'r') as f:
+# 	lineCounter = 0
+# 	lines = ""
+# 	for line in f:
+# 		lines += f.readline()
+# 		lineCounter += 1
+# 		if lineCounter == 5000:
+# 			parts.append(lines)
+# 			lines = ""
+# 			lineCounter = 0
+# 	parts.append(lines)
+
+# print(parts)
+
+# pprint(vars(tempResult1))
+print(tempResult1)
