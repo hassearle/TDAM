@@ -17,6 +17,7 @@ class V3DPTestCases(unittest.TestCase):
 	BED_TEMP_HEADER1 = '[M][1][4][0] [S][0-9]{2}'
 	BED_TEMP_HEADER2 = '[M][1][9][0] [S][0-9]{2}'
 	BED_TEMP_VAR = 25
+	MAX_BED_TEMP_VAR = 65
 	LAYER_HEIGHT = 0.3
 	LAYER_HEIGHT_HEADER = "G1 Z"
 	Z_REPOSITION_VAR = 0.5
@@ -67,6 +68,22 @@ class V3DPTestCases(unittest.TestCase):
 			current = float(i.group(0))
 			if current != 0 and current != self.BED_TEMP_VAR:
 				actualResult = "incorrect bed temp: index(" + str(index) + ")"
+				break
+			else:
+				actualResult = True
+		self.assertEqual(expectedResult, actualResult)
+
+	def test100_920_bedTempMax(self):
+		expectedResult = True
+		actualResult = False
+		with open(self.GCODE_INPUT, 'r') as f:
+			gCodeInput = f.read()
+		m = re.findall(self.BED_TEMP_HEADER1, gCodeInput)
+		for index, element in enumerate(m):
+			i = re.search('(?<=S)(.*)', element)
+			current = float(i.group(0))
+			if current > self.MAX_BED_TEMP_VAR:
+				actualResult = "exceded mad bed temp: index(" + str(index) + ")"
 				break
 			else:
 				actualResult = True

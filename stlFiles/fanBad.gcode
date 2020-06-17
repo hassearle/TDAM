@@ -7,9 +7,9 @@
 ; automatic settings before start_gcode
 G21 ; set units to millimeters
 M107 ; fan off
-M140 S25 ; start heating the bed
+M140 S26 ; start heating the bed
 M104 T0 S210 ; start heating T0
-M190 S26 ; wait for bed temperature to be reached
+M190 S66 ; wait for bed temperature to be reached
 T0 ; set the active extruder to 0
 ; settings from start_gcode
 G28 X0 Y0 Z0 ; home all axes
