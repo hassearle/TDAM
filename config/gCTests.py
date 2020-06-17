@@ -14,6 +14,9 @@ class V3DPTestCases(unittest.TestCase):
 	GCODE_INPUT = ""
 	TEMP = "M104"
 	TEMP_VAR = "210"
+	LAYER_HEIGHT = 0.3
+	LAYER_HEIGHT_HEADER = "G1 Z"
+	Z_REPOSITION_VAR = 0.5
 
 	def setUp(self):
 		pass
@@ -49,6 +52,42 @@ class V3DPTestCases(unittest.TestCase):
 			self.assertEqual(expectedResult, actualResult)
 		except Exception as e:
 			raise ValueError("fan never engaged")
+
+	def test300_100_layerHeight(self):
+		expectedResult = True
+		actualResult = False
+		reLayerHeight = '[G][1] [Z]([0-9+].[0-9+]|[0-9+])[\n][G][1] [E]'
+		reLayerHeightDigits = '([0-9+].[0-9+]|[0-9+])'
+
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+			m = re.findall(reLayerHeight, gCodeInput)
+			
+			previous = next_ = None
+			mLength = len(m)
+			for index, element in enumerate(m):
+				i = re.search(reLayerHeightDigits, element)
+				current = float(i.group(0))
+				
+				if index > 0:
+					j = re.search(reLayerHeightDigits, m[index - 1])
+					previous = float(j.group(0))
+					diff1 = round(current - previous, 3)
+					if diff1 != 0.0 and diff1 != self.LAYER_HEIGHT:
+						raise ValueError("layer height error")
+
+				if index < (mLength -1):
+					k = re.search(reLayerHeightDigits, m[index + 1])
+					next_ = float(k.group(0))
+					diff2 = round(next_ - current, 3)
+					if diff2 != 0.0 and diff2 != self.LAYER_HEIGHT:
+						raise ValueError("layer height error")
+
+			actualResult = True
+			self.assertEqual(expectedResult, actualResult)
+		except Exception as e:
+			raise ValueError(e.args[0])
 
 
 if __name__ == '__main__':
