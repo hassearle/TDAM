@@ -14,6 +14,8 @@ class V3DPTestCases(unittest.TestCase):
 	GCODE_INPUT = ""
 	TEMP = "M104"
 	TEMP_VAR = "210"
+	BED_TEMP_HEADER = '[M][1][4][0] [S][0-9]{2}'
+	BED_TEMP_VAR = 25
 	LAYER_HEIGHT = 0.3
 	LAYER_HEIGHT_HEADER = "G1 Z"
 	Z_REPOSITION_VAR = 0.5
@@ -40,6 +42,25 @@ class V3DPTestCases(unittest.TestCase):
 			self.assertEqual(expectedResult, actualResult)
 		except Exception as e:
 			raise ValueError("temp wrong")
+
+	def test100_110_bedTemp(self):
+		expectedResult = True
+		actualResult = False
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+			m = re.findall(self.BED_TEMP_HEADER, gCodeInput)
+			for index, element in enumerate(m):
+				i = re.search('(?<=S)(.*)', element)
+				current = float(i.group(0))
+				if current != 0 and current != self.BED_TEMP_VAR:
+					raise ValueError("bed temp not engaged")
+			actualResult = True
+			self.assertEqual(expectedResult, actualResult)
+		except Exception as e:
+			raise ValueError(e.args[0])
+
+
 
 	def test200_100_fanNeverEngaged(self):
 		expectedResult = True
@@ -69,7 +90,7 @@ class V3DPTestCases(unittest.TestCase):
 			for index, element in enumerate(m):
 				i = re.search(self.DIGITS, element)
 				current = float(i.group(0))
-				
+
 				if index > 0:
 					j = re.search(self.DIGITS, m[index - 1])
 					previous = float(j.group(0))
