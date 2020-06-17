@@ -17,6 +17,7 @@ class V3DPTestCases(unittest.TestCase):
 	LAYER_HEIGHT = 0.3
 	LAYER_HEIGHT_HEADER = "G1 Z"
 	Z_REPOSITION_VAR = 0.5
+	DIGITS = '([0-9+].[0-9+]|[0-9+])'
 
 	def setUp(self):
 		pass
@@ -57,7 +58,6 @@ class V3DPTestCases(unittest.TestCase):
 		expectedResult = True
 		actualResult = False
 		reLayerHeight = '[G][1] [Z]([0-9+].[0-9+]|[0-9+])[\n][G][1] [E]'
-		reLayerHeightDigits = '([0-9+].[0-9+]|[0-9+])'
 
 		try:
 			with open(self.GCODE_INPUT, 'r') as f:
@@ -67,18 +67,18 @@ class V3DPTestCases(unittest.TestCase):
 			previous = next_ = None
 			mLength = len(m)
 			for index, element in enumerate(m):
-				i = re.search(reLayerHeightDigits, element)
+				i = re.search(self.DIGITS, element)
 				current = float(i.group(0))
 				
 				if index > 0:
-					j = re.search(reLayerHeightDigits, m[index - 1])
+					j = re.search(self.DIGITS, m[index - 1])
 					previous = float(j.group(0))
 					diff1 = round(current - previous, 3)
 					if diff1 != 0.0 and diff1 != self.LAYER_HEIGHT:
 						raise ValueError("layer height error")
 
 				if index < (mLength -1):
-					k = re.search(reLayerHeightDigits, m[index + 1])
+					k = re.search(self.DIGITS, m[index + 1])
 					next_ = float(k.group(0))
 					diff2 = round(next_ - current, 3)
 					if diff2 != 0.0 and diff2 != self.LAYER_HEIGHT:
