@@ -14,7 +14,8 @@ class V3DPTestCases(unittest.TestCase):
 	GCODE_INPUT = ""
 	TEMP = "M104"
 	TEMP_VAR = "210"
-	BED_TEMP_HEADER = '[M][1][4][0] [S][0-9]{2}'
+	BED_TEMP_HEADER1 = '[M][1][4][0] [S][0-9]{2}'
+	BED_TEMP_HEADER2 = '[M][1][9][0] [S][0-9]{2}'
 	BED_TEMP_VAR = 25
 	LAYER_HEIGHT = 0.3
 	LAYER_HEIGHT_HEADER = "G1 Z"
@@ -49,12 +50,29 @@ class V3DPTestCases(unittest.TestCase):
 		try:
 			with open(self.GCODE_INPUT, 'r') as f:
 				gCodeInput = f.read()
-			m = re.findall(self.BED_TEMP_HEADER, gCodeInput)
+			m = re.findall(self.BED_TEMP_HEADER1, gCodeInput)
 			for index, element in enumerate(m):
 				i = re.search('(?<=S)(.*)', element)
 				current = float(i.group(0))
 				if current != 0 and current != self.BED_TEMP_VAR:
-					raise ValueError("bed temp not engaged")
+					raise ValueError("incorrect bed temp: index(" + str(index) + ")")
+			actualResult = True
+			self.assertEqual(expectedResult, actualResult)
+		except Exception as e:
+			raise ValueError(e.args[0])
+
+	def test100_111_bedTemp(self):
+		expectedResult = True
+		actualResult = False
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+			m = re.findall(self.BED_TEMP_HEADER2, gCodeInput)
+			for index, element in enumerate(m):
+				i = re.search('(?<=S)(.*)', element)
+				current = float(i.group(0))
+				if current != 0 and current != self.BED_TEMP_VAR:
+					raise ValueError("incorrect bed temp: index(" + str(index) + ")")
 			actualResult = True
 			self.assertEqual(expectedResult, actualResult)
 		except Exception as e:
@@ -96,14 +114,14 @@ class V3DPTestCases(unittest.TestCase):
 					previous = float(j.group(0))
 					diff1 = round(current - previous, 3)
 					if diff1 != 0.0 and diff1 != self.LAYER_HEIGHT:
-						raise ValueError("layer height error")
+						raise ValueError("layer height error: index(" + str(index) + ")")
 
 				if index < (mLength -1):
 					k = re.search(self.DIGITS, m[index + 1])
 					next_ = float(k.group(0))
 					diff2 = round(next_ - current, 3)
 					if diff2 != 0.0 and diff2 != self.LAYER_HEIGHT:
-						raise ValueError("layer height error")
+						raise ValueError("layer height error: index(" + str(index) + ")")
 
 			actualResult = True
 			self.assertEqual(expectedResult, actualResult)

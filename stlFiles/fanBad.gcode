@@ -9,7 +9,7 @@ G21 ; set units to millimeters
 M107 ; fan off
 M140 S25 ; start heating the bed
 M104 T0 S210 ; start heating T0
-M190 S25 ; wait for bed temperature to be reached
+M190 S26 ; wait for bed temperature to be reached
 T0 ; set the active extruder to 0
 ; settings from start_gcode
 G28 X0 Y0 Z0 ; home all axes
@@ -22456,7 +22456,7 @@ G1 X136.3 Y107.59
 G1 X127.4 Y110.36
 G1 X118.49 Y113.12
 ; TYPE:WALL-INNER
-G1 Z3.1
+G1 Z3
 G1 E4441.01 F1800
 G1 X118.49 Y114.32 E4441.07 F3600
 G1 X122.82 E4441.286
