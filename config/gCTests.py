@@ -83,7 +83,23 @@ class V3DPTestCases(unittest.TestCase):
 			i = re.search('(?<=S)(.*)', element)
 			current = float(i.group(0))
 			if current > self.MAX_BED_TEMP_VAR:
-				actualResult = "exceded mad bed temp: index(" + str(index) + ")"
+				actualResult = "exceded max bed temp: index(" + str(index) + ")"
+				break
+			else:
+				actualResult = True
+		self.assertEqual(expectedResult, actualResult)
+
+	def test100_921_bedTempMax(self):
+		expectedResult = True
+		actualResult = False
+		with open(self.GCODE_INPUT, 'r') as f:
+			gCodeInput = f.read()
+		m = re.findall(self.BED_TEMP_HEADER2, gCodeInput)
+		for index, element in enumerate(m):
+			i = re.search('(?<=S)(.*)', element)
+			current = float(i.group(0))
+			if current > self.MAX_BED_TEMP_VAR:
+				actualResult = "exceded max bed temp: index(" + str(index) + ")"
 				break
 			else:
 				actualResult = True
