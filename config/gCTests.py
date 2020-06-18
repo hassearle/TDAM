@@ -12,8 +12,10 @@ import re
 
 class V3DPTestCases(unittest.TestCase):
 	GCODE_INPUT = ""
-	TEMP = "M104"
+	TEMP_HEADER = '(?<=M104)(.*)'
+	TEMP_DIGITS = '(?<=S)[0-9+]'
 	TEMP_VAR = "210"
+	MAX_TEMP_VAR = 220
 	BED_TEMP_HEADER1 = '[M][1][4][0] [S][0-9]{2}'
 	BED_TEMP_HEADER2 = '[M][1][9][0] [S][0-9]{2}'
 	BED_TEMP_VAR = 25
@@ -31,15 +33,16 @@ class V3DPTestCases(unittest.TestCase):
 		actualResult = False
 		with open(self.GCODE_INPUT, 'r') as f:
 			gCodeInput = f.read()
-		m = re.findall('(?<=M104)(.*)', gCodeInput)
-		for element in m:
-			if self.TEMP_VAR in element:
-				actualResult = True
-			elif "S0" in element:
-				actualResult = True
+		m = re.findall(self.TEMP_HEADER, gCodeInput)
+		for index, element in enumerate(m):
+			i = re.search(self.TEMP_DIGITS, element)
+			current = float(i.group(0))
+			if current > self.MAX_TEMP_VAR:
+				actualResult = "exceeded max temp: index(" + str(index) + ")"
+				break
 			else:
-				actualResult = "exceeded max temp"	
-			self.assertEqual(expectedResult, actualResult)
+				actualResult = True
+		self.assertEqual(expectedResult, actualResult)
 
 	def test100_110_bedTemp(self):
 		expectedResult = True
