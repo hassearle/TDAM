@@ -12,9 +12,10 @@ import re
 
 class V3DPTestCases(unittest.TestCase):
 	GCODE_INPUT = ""
-	TEMP_HEADER = '(?<=M104)(.*)'
-	TEMP_DIGITS = '(?<=S)[0-9+]'
-	TEMP_VAR = "210"
+	TEMP_HEADER1 = '(?<=M104)(.*)'
+	TEMP_HEADER2 = '(?<=M109)(.*)'
+	TEMP_DIGITS = '(?<=S)([0-9]{3}|[0])'
+	TEMP_VAR = 210
 	MAX_TEMP_VAR = 220
 	BED_TEMP_HEADER1 = '[M][1][4][0] [S][0-9]{2}'
 	BED_TEMP_HEADER2 = '[M][1][9][0] [S][0-9]{2}'
@@ -28,12 +29,12 @@ class V3DPTestCases(unittest.TestCase):
 	def setUp(self):
 		pass
 
-	def test100_100_maxTemp(self):
+	def test100_900_maxTemp(self):
 		expectedResult = True
 		actualResult = False
 		with open(self.GCODE_INPUT, 'r') as f:
 			gCodeInput = f.read()
-		m = re.findall(self.TEMP_HEADER, gCodeInput)
+		m = re.findall(self.TEMP_HEADER1, gCodeInput)
 		for index, element in enumerate(m):
 			i = re.search(self.TEMP_DIGITS, element)
 			current = float(i.group(0))
@@ -44,7 +45,55 @@ class V3DPTestCases(unittest.TestCase):
 				actualResult = True
 		self.assertEqual(expectedResult, actualResult)
 
-	def test100_110_bedTemp(self):
+	def test100_901_maxTemp(self):
+		expectedResult = True
+		actualResult = False
+		with open(self.GCODE_INPUT, 'r') as f:
+			gCodeInput = f.read()
+		m = re.findall(self.TEMP_HEADER2, gCodeInput)
+		for index, element in enumerate(m):
+			i = re.search(self.TEMP_DIGITS, element)
+			current = float(i.group(0))
+			if current > self.MAX_TEMP_VAR:
+				actualResult = "exceeded max temp: index(" + str(index) + ")"
+				break
+			else:
+				actualResult = True
+		self.assertEqual(expectedResult, actualResult)
+
+	def test100_110_temp(self):
+		expectedResult = True
+		actualResult = False
+		with open(self.GCODE_INPUT, 'r') as f:
+			gCodeInput = f.read()
+		m = re.findall(self.TEMP_HEADER1, gCodeInput)
+		for index, element in enumerate(m):
+			i = re.search(self.TEMP_DIGITS, element)
+			current = float(i.group(0))
+			if current != 0 and current != self.TEMP_VAR:
+				actualResult = "exceeded max temp: index(" + str(index) + ")"
+				break
+			else:
+				actualResult = True
+		self.assertEqual(expectedResult, actualResult)
+
+	def test100_111_temp(self):
+		expectedResult = True
+		actualResult = False
+		with open(self.GCODE_INPUT, 'r') as f:
+			gCodeInput = f.read()
+		m = re.findall(self.TEMP_HEADER2, gCodeInput)
+		for index, element in enumerate(m):
+			i = re.search(self.TEMP_DIGITS, element)
+			current = float(i.group(0))
+			if current != 0 and current != self.TEMP_VAR:
+				actualResult = "exceeded max temp: index(" + str(index) + ")"
+				break
+			else:
+				actualResult = True
+		self.assertEqual(expectedResult, actualResult)
+
+	def test100_120_bedTemp(self):
 		expectedResult = True
 		actualResult = False
 		with open(self.GCODE_INPUT, 'r') as f:
@@ -60,7 +109,7 @@ class V3DPTestCases(unittest.TestCase):
 				actualResult = True
 		self.assertEqual(expectedResult, actualResult)
 
-	def test100_111_bedTemp(self):
+	def test100_121_bedTemp(self):
 		expectedResult = True
 		actualResult = False
 		with open(self.GCODE_INPUT, 'r') as f:
@@ -76,7 +125,7 @@ class V3DPTestCases(unittest.TestCase):
 				actualResult = True
 		self.assertEqual(expectedResult, actualResult)
 
-	def test100_920_bedTempMax(self):
+	def test100_930_bedTempMax(self):
 		expectedResult = True
 		actualResult = False
 		with open(self.GCODE_INPUT, 'r') as f:
@@ -92,7 +141,7 @@ class V3DPTestCases(unittest.TestCase):
 				actualResult = True
 		self.assertEqual(expectedResult, actualResult)
 
-	def test100_921_bedTempMax(self):
+	def test100_931_bedTempMax(self):
 		expectedResult = True
 		actualResult = False
 		with open(self.GCODE_INPUT, 'r') as f:
@@ -108,7 +157,7 @@ class V3DPTestCases(unittest.TestCase):
 				actualResult = True
 		self.assertEqual(expectedResult, actualResult)
 
-	def test200_100_fanNeverEngaged(self):
+	def test200_900_fanNeverEngaged(self):
 		expectedResult = True
 		actualResult = False
 		with open(self.GCODE_INPUT, 'r') as f:
