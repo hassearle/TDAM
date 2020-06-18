@@ -8,13 +8,13 @@
 G21 ; set units to millimeters
 M107 ; fan off
 M140 S66 ; start heating the bed
-M104 T0 S210 ; start heating T0
+M104 T0 S230 ; start heating T0
 M190 S66 ; wait for bed temperature to be reached
 T0 ; set the active extruder to 0
 ; settings from start_gcode
 G28 X0 Y0 Z0 ; home all axes
 G1 Z5 F5000
-M109 S210 ; set the extruder temp and wait
+M109 S230 ; set the extruder temp and wait
 G28 X0 Y0 Z0 ; Home Z again in case there was filament on nozzle
 G29 ; probe the bed
 ; automatic settings after start_gcode
@@ -36764,7 +36764,6 @@ G1 X160.96 Y104.39 E6643.942 F3600
 ; TYPE:FILL
 ; TYPE:BRIDGE
 M400
-M106 S255
 G1 Z5.7 F9000
 G1 X154.09 Y102.06
 G1 X157.7 E6644.122 F3600
@@ -37089,7 +37088,7 @@ G1 X146.32 Y104.82 F9000
 G1 X138.56 Y107.59
 G1 X130.79 Y110.35
 G1 X123.02 Y113.11
-G1 Z5.7
+G1 Z5.6
 G1 E6686.654 F1800
 G1 Y114.31 E6686.714 F3600
 G1 X127.26 Y114.32 E6686.925

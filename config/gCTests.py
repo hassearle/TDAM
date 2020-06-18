@@ -22,8 +22,9 @@ class V3DPTestCases(unittest.TestCase):
 	BED_TEMP_VAR = 25
 	MAX_BED_TEMP_VAR = 65
 	LAYER_HEIGHT = 0.3
-	LAYER_HEIGHT_HEADER = "G1 Z"
-	Z_REPOSITION_VAR = 0.5
+	FAN_HEADER = '(?<=M106)(.*)'
+	LAYER_HEIGHT_HEADER = '[G][1] [Z]([0-9+].[0-9+]|[0-9+])[\n][G][1] [E]'
+
 	DIGITS = '([0-9+].[0-9+]|[0-9+])'
 
 	def setUp(self):
@@ -163,18 +164,17 @@ class V3DPTestCases(unittest.TestCase):
 		with open(self.GCODE_INPUT, 'r') as f:
 			gCodeInput = f.read()
 
-		m = re.search('(?<=M106)(.*)', gCodeInput)
+		m = re.search(self.FAN_HEADER, gCodeInput)
 		actualResult = True if m != None else "fan never engaged"
 		self.assertEqual(expectedResult, actualResult)
 
 	def test300_100_layerHeight(self):
 		expectedResult = True
 		actualResult = False
-		reLayerHeight = '[G][1] [Z]([0-9+].[0-9+]|[0-9+])[\n][G][1] [E]'
 
 		with open(self.GCODE_INPUT, 'r') as f:
 			gCodeInput = f.read()
-		m = re.findall(reLayerHeight, gCodeInput)
+		m = re.findall(self.LAYER_HEIGHT_HEADER, gCodeInput)
 		
 		previous = next_ = None
 		mLength = len(m)
