@@ -362,6 +362,50 @@ class V3DPTestCases(unittest.TestCase):
 
 		self.assertEqual(expectedResult, actualResult)
 
+	# MAX_Y_SIZE = 254.0
+	# MIN_Y_SIZE = 2.0
+	MAX_Y_SIZE = 200.0
+	MIN_Y_SIZE = 10.0
+	Y_SIZE_HEADER = 'G1 [X]*[\d]*[.]*[\d]* *[Y](\d+.\d+|\d+)'
+
+	def test600_920_exceedsMaxYSize(self):
+		expectedResult = False
+		actualResult = True
+		with open(self.GCODE_INPUT, 'r') as f:
+			gCodeInput = f.read()
+		m = re.findall(self.Y_SIZE_HEADER, gCodeInput)
+		print(m)
+		elementY = None
+		for index, element in enumerate(m):
+			elementY = element
+			print(element)
+			if float(element) > self.MAX_Y_SIZE:
+				actualResult = " Y value(" + str(elementY[2]) + ") exceeds mas Y-axis threshold(" + str(self.MAX_Y_SIZE) + ")"
+				break
+			elif index == len(m)-1:
+				actualResult = False
+
+		self.assertEqual(expectedResult, actualResult)
+
+	def test600_930_exceedsMinYSize(self):
+		expectedResult = False
+		actualResult = True
+		with open(self.GCODE_INPUT, 'r') as f:
+			gCodeInput = f.read()
+
+		m = re.findall(self.Y_SIZE_HEADER, gCodeInput)
+		elementY = None
+		for index, element in enumerate(m):
+			elementY = element
+			if float(element) < self.MIN_Y_SIZE:
+				if index == 0: continue
+				actualResult = " Y value(" + str(elementY) + ") exceeds min Y-axis threshold(" + str(self.MIN_Y_SIZE) + ")"
+				break
+			elif index == len(m)-1:
+				actualResult = False
+
+		self.assertEqual(expectedResult, actualResult)
+
 if __name__ == '__main__':
 	if len(sys.argv) > 1:
 		V3DPTestCases.GCODE_INPUT = sys.argv.pop()
