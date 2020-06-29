@@ -116735,7 +116735,7 @@ G1 X28.68 Y193.54
 G1 X24.01 Y195.15
 G1 X19.34 Y196.77
 G1 X14.67 Y198.38
-G1 X10 Y200
+G1 X8 Y200
 M84     ; disable motors
 ; filament used = 17386.1
 ; filament used extruder 1 (mm) = 17386.1

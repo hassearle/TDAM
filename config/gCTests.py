@@ -322,7 +322,7 @@ class V3DPTestCases(unittest.TestCase):
 	# MAX_X_SIZE = 228.0
 	# MIN_X_SIZE = 2.0
 	MAX_X_SIZE = 200.0
-	MIN_X_SIZE = 20.0
+	MIN_X_SIZE = 10.0
 	X_SIZE_HEADER = '[G][1] [X]([0-9]+.[0-9]+|[0-9]+)'
 
 	def test600_900_exceedsMaxXSize(self):
@@ -336,13 +336,31 @@ class V3DPTestCases(unittest.TestCase):
 		for index, element in enumerate(m):
 			elementX = element
 			if float(element) > self.MAX_X_SIZE:
-				actualResult = " X value(" + str(elementX) + ") exceeds X-axis threshold(" + str(self.MAX_X_SIZE) + ")"
+				actualResult = " X value(" + str(elementX) + ") exceeds mas X-axis threshold(" + str(self.MAX_X_SIZE) + ")"
 				break
 			elif index == len(m)-1:
 				actualResult = False
 
 		self.assertEqual(expectedResult, actualResult)
 
+	def test600_910_exceedsMinXSize(self):
+		expectedResult = False
+		actualResult = True
+		with open(self.GCODE_INPUT, 'r') as f:
+			gCodeInput = f.read()
+
+		m = re.findall(self.X_SIZE_HEADER, gCodeInput)
+		elementX = None
+		for index, element in enumerate(m):
+			elementX = element
+			if float(element) < self.MIN_X_SIZE:
+				if index == 0: continue
+				actualResult = " X value(" + str(elementX) + ") exceeds min X-axis threshold(" + str(self.MIN_X_SIZE) + ")"
+				break
+			elif index == len(m)-1:
+				actualResult = False
+
+		self.assertEqual(expectedResult, actualResult)
 
 if __name__ == '__main__':
 	if len(sys.argv) > 1:
