@@ -9,6 +9,7 @@
 import unittest
 import sys
 import re
+import statistics 
 
 class V3DPTestCases(unittest.TestCase):
 	GCODE_INPUT = ""
@@ -200,9 +201,152 @@ class V3DPTestCases(unittest.TestCase):
 			actualResult = True
 		self.assertEqual(expectedResult, actualResult)
 
+	def test400_100_feedRate(self):
+		pass
+		#112.5
+
+	# swap 0 and 0.0
+	INFILL = 	'[G][1] [X]([0-9]+|[0-9]+.[0-9]+) ([E][0-9]+.[0-9]+ [F][0-9]+|[E][0-9]+.[0-9]+)'
+
+	# '[G][1] [X]([0-9]+|[0-9]+.[0-9]+) [Y]([0-9]+|[0-9]+.[0-9]+) ([E][0-9]+.[0-9]+ [F][0-9]+|[E][0-9]+.[0-9]+)'
+
+	def test500_100_infill(self):
+		pass
+		# expectedResult = True
+		# actualResult = False
+
+		# # with open(self.GCODE_INPUT, 'r') as f:
+		# 	# 	gCodeInput = f.read()
+		# 	# m = re.findall(self.INFILL, gCodeInput)
+		# 	# n = []
+		# 	# for element in m:
+		# 	# 	n.append(float(element[0]))
+		# 	# xxDiff = n[6] - n[5]
+		# 	# print(xxDiff)
+		# 	# n.sort()
+		# 	# highestX = n[-1]
+		# 	# lowestX = n[0]
+		# 	# print(highestX)
+		# 	# print(lowestX)
+		# 	# xDiff = highestX - lowestX
+		# 	# print(xDiff)
+		# 	# xxxDiff = xDiff / xxDiff
+		# 	# print(xxxDiff)
+		# infill = []
+		# tempInfillList = ""
+		# skipHeader = 'LAYER_HEIGHT'
+		# infillHeader = 'TYPE:FILL'
+		# stopHeader = '; '
+		# skip = False
+		# cont = False
+		# with open(self.GCODE_INPUT, 'r') as f:
+		# 	for index, line in enumerate(f):
+		# 		if skipHeader in line:
+		# 			skip = True
+		# 			f.readline()
+		# 			# print("two " + str(index) + " " + f.readline())
+		# 		elif infillHeader in line:
+		# 			cont = True
+		# 			# print("three " + str(index) + " " + f.readline())
+		# 			while cont == True:
+		# 				nextLine = f.readline()
+		# 				nextLine = nextLine
+
+		# 				if stopHeader in nextLine:
+		# 					# print("four " + str(index) + " " + f.readline())
+		# 					cont = False
+		# 					infill.append(tempInfillList)
+		# 					tempInfillList = ""
+		# 					break
+		# 				else:
+		# 					tempInfillList += nextLine
+		# 					# print("five " + str(index) + " " + nextLine)
+
+		# # for index, element in enumerate(infill):
+		# 	# print(index)
+		# 	# print("[ " + element + "]")
+
+		# avgInfill = []
+		# for element in infill:
+		# # 	for element_ in list_:
+		# 	m = re.findall(self.INFILL, element)
+		# 	# print("[ " + str(m) + "]")
+		# 	n = []
+		# 	index_ = -1
+		# 	for index, item in enumerate(m):
+		# 		index_ = index
+		# 		n.append(float(item[0]))
+		# 	if len(n) == 0: continue
+		# 	if n[0] > n[3]: spaceBetweenX_1 = n[0] - n[3]
+		# 	else: spaceBetweenX_1 = n[3] - n[0]
+			
+		# 	if n[-1] > n[-4]: spaceBetweenX_2 = n[-1] - n[-4]
+		# 	else: spaceBetweenX_2 = n[-4] - n[-1]
+
+		# 	if spaceBetweenX_1 > spaceBetweenX_2:
+		# 		spaceBetweenX = spaceBetweenX_1
+		# 	else:
+		# 		spaceBetweenX = spaceBetweenX_2
+
+
+		# 	print("space b/w x: " + str(spaceBetweenX))
+			
+		# 	n.sort()
+		# 	highestX = n[-1]
+		# 	lowestX = n[0]
+		# 	print("highest X: " + str(highestX))
+		# 	print("lowest X: " + str(lowestX))
+
+		# 	totalXSpace = highestX - lowestX
+		# 	# totalXSpace = index * spaceBetweenX
+		# 	print("total X Space: " + str(totalXSpace))
+
+		# 	# percentNotInfill = totalXSpace / spaceBetweenX
+		# 	# percentInfill = totalXSpace / percentNotInfill
+		# 	percentInfill = totalXSpace / spaceBetweenX
+		# 	print("percent infill: " + str(percentInfill))
+		# 	if percentInfill <= 100:
+		# 		avgInfill.append(percentInfill)
+			
+		# 	print(index_)
+		# 	# print(element)
+
+		# # print(statistics.mean(avgInfill))
+		# print("\n")
+
+
+# if wrong type:fill continue and skip
+# if type:fill: save to list
+# if ; in line stop saving to list
+
+	# MAX_X_SIZE = 228.0
+	# MIN_X_SIZE = 2.0
+	MAX_X_SIZE = 200.0
+	MIN_X_SIZE = 20.0
+	X_SIZE_HEADER = '[G][1] [X]([0-9]+.[0-9]+|[0-9]+)'
+
+	def test600_900_exceedsMaxXSize(self):
+		expectedResult = False
+		actualResult = True
+		with open(self.GCODE_INPUT, 'r') as f:
+			gCodeInput = f.read()
+
+		m = re.findall(self.X_SIZE_HEADER, gCodeInput)
+		elementX = None
+		for index, element in enumerate(m):
+			elementX = element
+			if float(element) > self.MAX_X_SIZE:
+				actualResult = " X value(" + str(elementX) + ") exceeds X-axis threshold(" + str(self.MAX_X_SIZE) + ")"
+				break
+			elif index == len(m)-1:
+				actualResult = False
+
+		self.assertEqual(expectedResult, actualResult)
+
 
 if __name__ == '__main__':
 	if len(sys.argv) > 1:
 		V3DPTestCases.GCODE_INPUT = sys.argv.pop()
 		# print(V3DPTestCases.GCODE_INPUT)
 	unittest.main()
+
