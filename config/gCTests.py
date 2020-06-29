@@ -25,6 +25,22 @@ class V3DPTestCases(unittest.TestCase):
 	LAYER_HEIGHT = 0.3
 	FAN_HEADER = '(?<=M106)(.*)'
 	LAYER_HEIGHT_HEADER = '[G][1] [Z]([0-9+].[0-9+]|[0-9+])[\n][G][1] [E]'
+	# MAX_X_SIZE = 228.0
+	# MIN_X_SIZE = 2.0
+	MAX_X_SIZE = 200.0
+	MIN_X_SIZE = 10.0
+	X_SIZE_HEADER = 'G1 X(-*\d+\.*\d*)'
+	# MAX_Y_SIZE = 254.0
+	# MIN_Y_SIZE = 2.0
+	MAX_Y_SIZE = 200.0
+	MIN_Y_SIZE = 10.0
+	Y_SIZE_HEADER = 'G1 X*\d*\.*\d* *[Y](-*\d+.\d+|\d+)'
+	# MAX_Z_SIZE = 254.0
+	# MIN_Z_SIZE = 2.0
+	MAX_Z_SIZE = 200.0
+	MIN_Z_SIZE = 0.1
+	Z_SIZE_HEADER = 'G1 *X*\d* *Y*\d* Z(-*\d+\.*\d+)'
+
 
 	DIGITS = '([0-9+].[0-9+]|[0-9+])'
 
@@ -319,12 +335,6 @@ class V3DPTestCases(unittest.TestCase):
 # if type:fill: save to list
 # if ; in line stop saving to list
 
-	# MAX_X_SIZE = 228.0
-	# MIN_X_SIZE = 2.0
-	MAX_X_SIZE = 200.0
-	MIN_X_SIZE = 10.0
-	X_SIZE_HEADER = 'G1 X(-*\d+\.*\d*)'
-
 	def test600_900_exceedsMaxXSize(self):
 		expectedResult = False
 		actualResult = True
@@ -362,12 +372,6 @@ class V3DPTestCases(unittest.TestCase):
 
 		self.assertEqual(expectedResult, actualResult)
 
-	# MAX_Y_SIZE = 254.0
-	# MIN_Y_SIZE = 2.0
-	MAX_Y_SIZE = 200.0
-	MIN_Y_SIZE = 10.0
-	Y_SIZE_HEADER = 'G1 X*\d*\.*\d* *[Y](-*\d+.\d+|\d+)'
-
 	def test600_920_exceedsMaxYSize(self):
 		expectedResult = False
 		actualResult = True
@@ -403,12 +407,6 @@ class V3DPTestCases(unittest.TestCase):
 				actualResult = False
 
 		self.assertEqual(expectedResult, actualResult)
-
-	# MAX_Z_SIZE = 254.0
-	# MIN_Z_SIZE = 2.0
-	MAX_Z_SIZE = 200.0
-	MIN_Z_SIZE = 0.1
-	Z_SIZE_HEADER = 'G1 *X*\d* *Y*\d* Z(-*\d+\.*\d+)'
 
 	def test600_940_exceedsMaxZSize(self):
 		expectedResult = False
