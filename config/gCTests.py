@@ -18,8 +18,8 @@ class V3DPTestCases(unittest.TestCase):
 	TEMP_DIGITS = '(?<=S)([0-9]+|[0])'
 	TEMP_VAR = 210
 	MAX_TEMP_VAR = 220
-	BED_TEMP_HEADER1 = '[M][1][4][0] [S][0-9]+'
-	BED_TEMP_HEADER2 = '[M][1][9][0] [S][0-9]+'
+	BED_TEMP_HEADER1 = '[M][1][4][0] [S]([0-9]+)'
+	BED_TEMP_HEADER2 = '[M][1][9][0] [S]([0-9]+)'
 	BED_TEMP_VAR = 35
 	MAX_BED_TEMP_VAR = 65
 	LAYER_HEIGHT = 0.3
@@ -29,12 +29,12 @@ class V3DPTestCases(unittest.TestCase):
 	# MAX_X_SIZE = 228.0
 	# MIN_X_SIZE = 2.0
 	MAX_X_SIZE = 200.0
-	MIN_X_SIZE = 10.0
+	MIN_X_SIZE = 5.0
 	X_SIZE_HEADER = 'G1 X(-*\d+\.*\d*)'
 	# MAX_Y_SIZE = 254.0
 	# MIN_Y_SIZE = 2.0
 	MAX_Y_SIZE = 200.0
-	MIN_Y_SIZE = 10.0
+	MIN_Y_SIZE = 5.0
 	Y_SIZE_HEADER = 'G1 X*\d*\.*\d* *[Y](-*\d+.\d+|\d+)'
 	# MAX_Z_SIZE = 254.0
 	# MIN_Z_SIZE = 2.0
@@ -170,15 +170,16 @@ class V3DPTestCases(unittest.TestCase):
 			gCodeInput = f.read()
 		m = re.findall(self.BED_TEMP_HEADER2, gCodeInput)
 		for index, element in enumerate(m):
-			i = re.search('(?<=S)(.*)', element)
-			current = float(i.group(0))
-			if current > self.MAX_BED_TEMP_VAR:
-				actualResult = "Bed Temp Error: value(" + str(current) + ") > bounds(" + str(self.MAX_BED_TEMP_VAR) + ")" 
-				break
-			elif i == None:
-				actualResult = "No print bed found"
-			else:
-				actualResult = True
+			print(element)
+			# i = re.search('(?<=S)(.*)', element)
+			# current = float(i.group(0))
+			# if current > self.MAX_BED_TEMP_VAR:
+			# 	actualResult = "Bed Temp Error: value(" + str(current) + ") > bounds(" + str(self.MAX_BED_TEMP_VAR) + ")" 
+			# 	break
+			# elif i == None:
+			# 	actualResult = "No print bed found"
+			# else:
+			# 	actualResult = True
 		self.assertEqual(expectedResult, actualResult)
 
 	def test200_900_fanNeverEngaged(self):
