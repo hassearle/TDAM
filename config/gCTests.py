@@ -115,16 +115,16 @@ class V3DPTestCases(unittest.TestCase):
 		with open(self.GCODE_INPUT, 'r') as f:
 			gCodeInput = f.read()
 		m = re.findall(self.BED_TEMP_HEADER1, gCodeInput)
-		for index, element in enumerate(m):
-			i = re.search('(?<=S)(.*)', element)
-			current = float(i.group(0))
-			if current != 0 and current != self.BED_TEMP_VAR:
-				actualResult = "Bed Temp Error: value(" + str(current) + ") != value(" + str(self.BED_TEMP_VAR) + ")"
-				break
-			else:
-				actualResult = True
-		if actualResult == False:
-			actualResult = "No print bed found"
+		if len(m) == 0:
+			actualResult = True
+		else:
+			for index, element in enumerate(m):
+				current = float(element)
+				if current != 0 and current != self.BED_TEMP_VAR:
+					actualResult = "Bed Temp Error: value(" + str(current) + ") != value(" + str(self.BED_TEMP_VAR) + ")"
+					break
+				else:
+					actualResult = True
 		self.assertEqual(expectedResult, actualResult)
 
 	def test100_121_bedTemp(self):
@@ -133,16 +133,16 @@ class V3DPTestCases(unittest.TestCase):
 		with open(self.GCODE_INPUT, 'r') as f:
 			gCodeInput = f.read()
 		m = re.findall(self.BED_TEMP_HEADER2, gCodeInput)
-		for index, element in enumerate(m):
-			i = re.search('(?<=S)(.*)', element)
-			current = float(i.group(0))
-			if current != 0 and current != self.BED_TEMP_VAR:
-				actualResult = "Bed Temp Error: value(" + str(current) + ") != value(" + str(self.BED_TEMP_VAR) + ")"
-				break
-			else:
-				actualResult = True
-		if actualResult == False:
-			actualResult = "No print bed found"
+		if len(m) == 0:
+			actualResult = True
+		else:
+			for index, element in enumerate(m):
+				current = float(element)
+				if current != 0 and current != self.BED_TEMP_VAR:
+					actualResult = "Bed Temp Error: value(" + str(current) + ") != value(" + str(self.BED_TEMP_VAR) + ")"
+					break
+				else:
+					actualResult = True
 		self.assertEqual(expectedResult, actualResult)
 
 	def test100_930_bedTempMax(self):
@@ -151,16 +151,16 @@ class V3DPTestCases(unittest.TestCase):
 		with open(self.GCODE_INPUT, 'r') as f:
 			gCodeInput = f.read()
 		m = re.findall(self.BED_TEMP_HEADER1, gCodeInput)
-		for index, element in enumerate(m):
-			i = re.search('(?<=S)(.*)', element)
-			current = float(i.group(0))
-			if current > self.MAX_BED_TEMP_VAR:
-				actualResult = "Bed Temp Error: value(" + str(current) + ") > bounds(" + str(self.MAX_BED_TEMP_VAR) + ")" 
-				break
-			elif i == None:
-				actualResult = "No print bed found"
-			else:
-				actualResult = True
+		if len(m) == 0:
+			actualResult = True
+		else:
+			for index, element in enumerate(m):
+				current = float(element)
+				if current > self.MAX_BED_TEMP_VAR:
+					actualResult = "Bed Temp Error: value(" + str(current) + ") > bounds(" + str(self.MAX_BED_TEMP_VAR) + ")" 
+					break
+				else:
+					actualResult = True
 		self.assertEqual(expectedResult, actualResult)
 
 	def test100_931_bedTempMax(self):
@@ -169,17 +169,16 @@ class V3DPTestCases(unittest.TestCase):
 		with open(self.GCODE_INPUT, 'r') as f:
 			gCodeInput = f.read()
 		m = re.findall(self.BED_TEMP_HEADER2, gCodeInput)
-		for index, element in enumerate(m):
-			print(element)
-			# i = re.search('(?<=S)(.*)', element)
-			# current = float(i.group(0))
-			# if current > self.MAX_BED_TEMP_VAR:
-			# 	actualResult = "Bed Temp Error: value(" + str(current) + ") > bounds(" + str(self.MAX_BED_TEMP_VAR) + ")" 
-			# 	break
-			# elif i == None:
-			# 	actualResult = "No print bed found"
-			# else:
-			# 	actualResult = True
+		if len(m) == 0:
+			actualResult = True
+		else:
+			for index, element in enumerate(m):
+				current = float(element)
+				if current > self.MAX_BED_TEMP_VAR:
+					actualResult = "Bed Temp Error: value(" + str(current) + ") > bounds(" + str(self.MAX_BED_TEMP_VAR) + ")" 
+					break
+				else:
+					actualResult = True
 		self.assertEqual(expectedResult, actualResult)
 
 	def test200_900_fanNeverEngaged(self):
