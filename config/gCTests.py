@@ -15,12 +15,12 @@ class V3DPTestCases(unittest.TestCase):
 	GCODE_INPUT = ""
 	TEMP_HEADER1 = '(?<=M104)(.*)'
 	TEMP_HEADER2 = '(?<=M109)(.*)'
-	TEMP_DIGITS = '(?<=S)([0-9]{3}|[0])'
+	TEMP_DIGITS = '(?<=S)([0-9]+|[0])'
 	TEMP_VAR = 210
 	MAX_TEMP_VAR = 220
-	BED_TEMP_HEADER1 = '[M][1][4][0] [S][0-9]{2}'
-	BED_TEMP_HEADER2 = '[M][1][9][0] [S][0-9]{2}'
-	BED_TEMP_VAR = 25
+	BED_TEMP_HEADER1 = '[M][1][4][0] [S][0-9]+'
+	BED_TEMP_HEADER2 = '[M][1][9][0] [S][0-9]+'
+	BED_TEMP_VAR = 35
 	MAX_BED_TEMP_VAR = 65
 	LAYER_HEIGHT = 0.3
 	FAN_HEADER = '(?<=M106)(.*)'
@@ -55,7 +55,7 @@ class V3DPTestCases(unittest.TestCase):
 			i = re.search(self.TEMP_DIGITS, element)
 			current = float(i.group(0))
 			if current > self.MAX_TEMP_VAR:
-				actualResult = "Extruder Temp Error: value(" + current + ") > bounds(" + self.MAX_TEMP_VAR + ")"
+				actualResult = "Extruder Temp Error: value(" + str(current) + ") > bounds(" + str(self.MAX_TEMP_VAR) + ")"
 				break
 			else:
 				actualResult = True
@@ -71,7 +71,7 @@ class V3DPTestCases(unittest.TestCase):
 			i = re.search(self.TEMP_DIGITS, element)
 			current = float(i.group(0))
 			if current > self.MAX_TEMP_VAR:
-				actualResult = "Extruder Temp Error: value(" + current + ") > bounds(" + self.MAX_TEMP_VAR + ")"
+				actualResult = "Extruder Temp Error: value(" + str(current) + ") > bounds(" + str(self.MAX_TEMP_VAR) + ")"
 				break
 			else:
 				actualResult = True
@@ -155,7 +155,7 @@ class V3DPTestCases(unittest.TestCase):
 			i = re.search('(?<=S)(.*)', element)
 			current = float(i.group(0))
 			if current > self.MAX_BED_TEMP_VAR:
-				actualResult = "Bed Temp Error: value(" + str(current) + ") > bounds(" + self.MAX_BED_TEMP_VAR + ")" 
+				actualResult = "Bed Temp Error: value(" + str(current) + ") > bounds(" + str(self.MAX_BED_TEMP_VAR) + ")" 
 				break
 			elif i == None:
 				actualResult = "No print bed found"
@@ -173,7 +173,7 @@ class V3DPTestCases(unittest.TestCase):
 			i = re.search('(?<=S)(.*)', element)
 			current = float(i.group(0))
 			if current > self.MAX_BED_TEMP_VAR:
-				actualResult = "Bed Temp Error: value(" + str(current) + ") > bounds(" + self.MAX_BED_TEMP_VAR + ")" 
+				actualResult = "Bed Temp Error: value(" + str(current) + ") > bounds(" + str(self.MAX_BED_TEMP_VAR) + ")" 
 				break
 			elif i == None:
 				actualResult = "No print bed found"
