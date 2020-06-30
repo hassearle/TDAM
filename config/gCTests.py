@@ -24,7 +24,8 @@ class V3DPTestCases(unittest.TestCase):
 	MAX_BED_TEMP_VAR = 65
 	LAYER_HEIGHT = 0.3
 	FAN_HEADER = '(?<=M106)(.*)'
-	LAYER_HEIGHT_HEADER = '[G][1] [Z]([0-9+].[0-9+]|[0-9+])[\n][G][1] [E]'
+	LAYER_HEIGHT_HEADER = 'G1 Z(-*\d+\.*\d*) *F*\d*\.*\d*\nG1 E'
+	DIGITS = '(\d+\.\d+|\d+)'
 	# MAX_X_SIZE = 228.0
 	# MIN_X_SIZE = 2.0
 	MAX_X_SIZE = 200.0
@@ -41,9 +42,6 @@ class V3DPTestCases(unittest.TestCase):
 	MIN_Z_SIZE = 0.1
 	Z_SIZE_HEADER = 'G1 *X*\d* *Y*\d* Z(-*\d+\.*\d+)'
 
-
-	DIGITS = '([0-9+].[0-9+]|[0-9+])'
-
 	def setUp(self):
 		pass
 
@@ -57,7 +55,7 @@ class V3DPTestCases(unittest.TestCase):
 			i = re.search(self.TEMP_DIGITS, element)
 			current = float(i.group(0))
 			if current > self.MAX_TEMP_VAR:
-				actualResult = "exceeded max temp: index(" + str(index) + ")"
+				actualResult = "Extruder Temp Error: value(" + current + ") > bounds(" + self.MAX_TEMP_VAR + ")"
 				break
 			else:
 				actualResult = True
@@ -73,7 +71,7 @@ class V3DPTestCases(unittest.TestCase):
 			i = re.search(self.TEMP_DIGITS, element)
 			current = float(i.group(0))
 			if current > self.MAX_TEMP_VAR:
-				actualResult = "exceeded max temp: index(" + str(index) + ")"
+				actualResult = "Extruder Temp Error: value(" + current + ") > bounds(" + self.MAX_TEMP_VAR + ")"
 				break
 			else:
 				actualResult = True
@@ -89,7 +87,7 @@ class V3DPTestCases(unittest.TestCase):
 			i = re.search(self.TEMP_DIGITS, element)
 			current = float(i.group(0))
 			if current != 0 and current != self.TEMP_VAR:
-				actualResult = "exceeded max temp: index(" + str(index) + ")"
+				actualResult = "Extruder Temp Error: value(" + str(current) + ") != value(" + str(self.TEMP_VAR) + ")"
 				break
 			else:
 				actualResult = True
@@ -105,7 +103,7 @@ class V3DPTestCases(unittest.TestCase):
 			i = re.search(self.TEMP_DIGITS, element)
 			current = float(i.group(0))
 			if current != 0 and current != self.TEMP_VAR:
-				actualResult = "exceeded max temp: index(" + str(index) + ")"
+				actualResult = "Extruder Temp Error: value(" + str(current) + ") != value(" + str(self.TEMP_VAR) + ")"
 				break
 			else:
 				actualResult = True
@@ -121,10 +119,12 @@ class V3DPTestCases(unittest.TestCase):
 			i = re.search('(?<=S)(.*)', element)
 			current = float(i.group(0))
 			if current != 0 and current != self.BED_TEMP_VAR:
-				actualResult = "incorrect bed temp: index(" + str(index) + ")"
+				actualResult = "Bed Temp Error: value(" + str(current) + ") != value(" + str(self.BED_TEMP_VAR) + ")"
 				break
 			else:
 				actualResult = True
+		if actualResult == False:
+			actualResult = "No print bed found"
 		self.assertEqual(expectedResult, actualResult)
 
 	def test100_121_bedTemp(self):
@@ -137,10 +137,12 @@ class V3DPTestCases(unittest.TestCase):
 			i = re.search('(?<=S)(.*)', element)
 			current = float(i.group(0))
 			if current != 0 and current != self.BED_TEMP_VAR:
-				actualResult = "incorrect bed temp: index(" + str(index) + ")"
+				actualResult = "Bed Temp Error: value(" + str(current) + ") != value(" + str(self.BED_TEMP_VAR) + ")"
 				break
 			else:
 				actualResult = True
+		if actualResult == False:
+			actualResult = "No print bed found"
 		self.assertEqual(expectedResult, actualResult)
 
 	def test100_930_bedTempMax(self):
@@ -153,8 +155,10 @@ class V3DPTestCases(unittest.TestCase):
 			i = re.search('(?<=S)(.*)', element)
 			current = float(i.group(0))
 			if current > self.MAX_BED_TEMP_VAR:
-				actualResult = "exceded max bed temp: index(" + str(index) + ")"
+				actualResult = "Bed Temp Error: value(" + str(current) + ") > bounds(" + self.MAX_BED_TEMP_VAR + ")" 
 				break
+			elif i == None:
+				actualResult = "No print bed found"
 			else:
 				actualResult = True
 		self.assertEqual(expectedResult, actualResult)
@@ -169,8 +173,10 @@ class V3DPTestCases(unittest.TestCase):
 			i = re.search('(?<=S)(.*)', element)
 			current = float(i.group(0))
 			if current > self.MAX_BED_TEMP_VAR:
-				actualResult = "exceded max bed temp: index(" + str(index) + ")"
+				actualResult = "Bed Temp Error: value(" + str(current) + ") > bounds(" + self.MAX_BED_TEMP_VAR + ")" 
 				break
+			elif i == None:
+				actualResult = "No print bed found"
 			else:
 				actualResult = True
 		self.assertEqual(expectedResult, actualResult)
@@ -191,28 +197,24 @@ class V3DPTestCases(unittest.TestCase):
 
 		with open(self.GCODE_INPUT, 'r') as f:
 			gCodeInput = f.read()
-		m = re.findall(self.LAYER_HEIGHT_HEADER, gCodeInput)
-		
-		previous = next_ = None
-		mLength = len(m)
-		for index, element in enumerate(m):
-			i = re.search(self.DIGITS, element)
-			current = float(i.group(0))
 
+		m = re.findall(self.LAYER_HEIGHT_HEADER, gCodeInput)
+		mLength = len(m)
+		previous = next_ = None
+		for index, element in enumerate(m):
+			current = float(element)
 			if index > 0:
-				j = re.search(self.DIGITS, m[index - 1])
-				previous = float(j.group(0))
+				previous = float(m[index -1])
 				diff1 = round(current - previous, 3)
 				if diff1 != 0.0 and diff1 != self.LAYER_HEIGHT:
-					actualResult = "layer height error: index(" + str(index) + ")"
+					actualResult = "layer height error: value(" + str(current) + ") != value(" + str(self.LAYER_HEIGHT) + ")"
 					break
 
 			if index < (mLength -1):
-				k = re.search(self.DIGITS, m[index + 1])
-				next_ = float(k.group(0))
+				next_ = float(m[index + 1])
 				diff2 = round(next_ - current, 3)
 				if diff2 != 0.0 and diff2 != self.LAYER_HEIGHT:
-					actualResult = "layer height error: index(" + str(index) + ")"
+					actualResult = "layer height error: value(" + str(next_) + ") != value(" + str(self.LAYER_HEIGHT) + ")"
 					break
 			actualResult = True
 		self.assertEqual(expectedResult, actualResult)
@@ -346,7 +348,7 @@ class V3DPTestCases(unittest.TestCase):
 		for index, element in enumerate(m):
 			elementX = element
 			if float(element) > self.MAX_X_SIZE:
-				actualResult = " X value(" + str(elementX) + ") over mas X-axis bounds(" + str(self.MAX_X_SIZE) + ")"
+				actualResult = " X value(" + str(elementX) + ") > X-axis bounds(" + str(self.MAX_X_SIZE) + ")"
 				break
 			elif index == len(m)-1:
 				actualResult = False
@@ -365,7 +367,7 @@ class V3DPTestCases(unittest.TestCase):
 			elementX = element
 			if float(element) < self.MIN_X_SIZE:
 				if index == 0: continue
-				actualResult = " X value(" + str(elementX) + ") under min X-axis bounds(" + str(self.MIN_X_SIZE) + ")"
+				actualResult = " X value(" + str(elementX) + ") < X-axis bounds(" + str(self.MIN_X_SIZE) + ")"
 				break
 			elif index == len(m)-1:
 				actualResult = False
@@ -382,7 +384,7 @@ class V3DPTestCases(unittest.TestCase):
 		for index, element in enumerate(m):
 			elementY = element
 			if float(element) > self.MAX_Y_SIZE:
-				actualResult = " Y value(" + str(elementY) + ") over mas Y-axis bounds(" + str(self.MAX_Y_SIZE) + ")"
+				actualResult = " Y value(" + str(elementY) + ") > Y-axis bounds(" + str(self.MAX_Y_SIZE) + ")"
 				break
 			elif index == len(m)-1:
 				actualResult = False
@@ -401,7 +403,7 @@ class V3DPTestCases(unittest.TestCase):
 			elementY = element
 			if float(element) < self.MIN_Y_SIZE:
 				if index == 0: continue
-				actualResult = " Y value(" + str(elementY) + ") under min Y-axis bounds(" + str(self.MIN_Y_SIZE) + ")"
+				actualResult = " Y value(" + str(elementY) + ") < Y-axis bounds(" + str(self.MIN_Y_SIZE) + ")"
 				break
 			elif index == len(m)-1:
 				actualResult = False
@@ -414,13 +416,11 @@ class V3DPTestCases(unittest.TestCase):
 		with open(self.GCODE_INPUT, 'r') as f:
 			gCodeInput = f.read()
 		m = re.findall(self.Z_SIZE_HEADER, gCodeInput)
-		print(m)
 		elementZ = None
 		for index, element in enumerate(m):
 			elementZ = element
-			print(element)
 			if float(element) > self.MAX_Z_SIZE:
-				actualResult = "Z value(" + str(elementZ) + ") over mas Z-axis bounds(" + str(self.MAX_Z_SIZE) + ")"
+				actualResult = "Z value(" + str(elementZ) + ") > Z-axis bounds(" + str(self.MAX_Z_SIZE) + ")"
 				break
 			elif index == len(m)-1:
 				actualResult = False
@@ -439,7 +439,7 @@ class V3DPTestCases(unittest.TestCase):
 			elementZ = element
 			if float(element) < self.MIN_Z_SIZE:
 				if index == 0: continue
-				actualResult = "Z value(" + str(elementZ) + ") under min Z-axis bounds(" + str(self.MIN_Z_SIZE) + ")"
+				actualResult = "Z value(" + str(elementZ) + ") < Z-axis bounds(" + str(self.MIN_Z_SIZE) + ")"
 				break
 			elif index == len(m)-1:
 				actualResult = False
