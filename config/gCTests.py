@@ -32,6 +32,8 @@ class V3DPTestCases(unittest.TestCase):
 	INFILL_HEADER1 = '; infillPercent = (-*\d+\.*\d*)'
 	INFILL_HEADER2 = '; fill_density = (-*\d+\.*\d*)%'
 	INFILL_VAR = 20.0
+	MAX_INFILL_VAR = 100.0
+	MIN_INFILL_VAR = 0.0
 	# MAX_X_SIZE = 228.0
 	# MIN_X_SIZE = 2.0
 	MAX_X_SIZE = 200.0
@@ -205,40 +207,45 @@ class V3DPTestCases(unittest.TestCase):
 			gCodeInput = f.read()
 
 		header = ''
+		skip = False
 		if self.SLICER_MATTER_SLICE in gCodeInput:
 			header = self.LAYER_HEIGHT_HEADER1
-		if self.SLICER_SLIC3R in gCodeInput:
+		elif self.SLICER_SLIC3R in gCodeInput:
 			header = self.LAYER_HEIGHT_HEADER2
+		else:
+			actualResult = "Unknown slicer. Unable to determine infill density"
+			skip = True
 
-		m = re.findall(header, gCodeInput)
-		mLength = len(m)
-		previous = next_ = None
-		for index, element in enumerate(m):
-			current = float(element)
-			if index < 1:
-				# skip because 1st layer height may be different
-				continue
-				# previous previous = float(m[index -1])
-				# diff1 = round(current - previous, 3)
-				# if diff1 != 0.0 and diff1 != self.LAYER_HEIGHT:
-				# 	print("\none")
-				# 	print("previous: " + str(previous))
-				# 	actualResult = "layer height error: value(" + str(current) + ") != value(" + str(self.LAYER_HEIGHT) + ")"
-				# 	break= float(m[index -1])
-				# diff1 = round(current - previous, 3)
-				# if diff1 != 0.0 and diff1 != self.LAYER_HEIGHT:
-				# 	print("\none")
-				# 	print("previous: " + str(previous))
-				# 	actualResult = "layer height error: value(" + str(current) + ") != value(" + str(self.LAYER_HEIGHT) + ")"
-				# 	break
+		if skip == False:
+			m = re.findall(header, gCodeInput)
+			mLength = len(m)
+			previous = next_ = None
+			for index, element in enumerate(m):
+				current = float(element)
+				if index < 1:
+					# skip because 1st layer height may be different
+					continue
+					# previous previous = float(m[index -1])
+					# diff1 = round(current - previous, 3)
+					# if diff1 != 0.0 and diff1 != self.LAYER_HEIGHT:
+					# 	print("\none")
+					# 	print("previous: " + str(previous))
+					# 	actualResult = "layer height error: value(" + str(current) + ") != value(" + str(self.LAYER_HEIGHT) + ")"
+					# 	break= float(m[index -1])
+					# diff1 = round(current - previous, 3)
+					# if diff1 != 0.0 and diff1 != self.LAYER_HEIGHT:
+					# 	print("\none")
+					# 	print("previous: " + str(previous))
+					# 	actualResult = "layer height error: value(" + str(current) + ") != value(" + str(self.LAYER_HEIGHT) + ")"
+					# 	break
 
-			if index < (mLength -1):
-				next_ = float(m[index + 1])
-				diff2 = round(next_ - current, 3)
-				if diff2 != 0.0 and diff2 != self.LAYER_HEIGHT:
-					actualResult = "layer height error: value(" + str(next_) + ") != value(" + str(self.LAYER_HEIGHT) + ")"
-					break
-			actualResult = True
+				if index < (mLength -1):
+					next_ = float(m[index + 1])
+					diff2 = round(next_ - current, 3)
+					if diff2 != 0.0 and diff2 != self.LAYER_HEIGHT:
+						actualResult = "layer height error: value(" + str(next_) + ") != value(" + str(self.LAYER_HEIGHT) + ")"
+						break
+				actualResult = True
 		self.assertEqual(expectedResult, actualResult)
 
 	def test400_100_feedRate(self):
@@ -378,9 +385,6 @@ class V3DPTestCases(unittest.TestCase):
 
 		# # print(statistics.mean(avgInfill))
 		# print("\n")
-
-	MAX_INFILL_VAR = 100.0
-	MIN_INFILL_VAR = 0.0
 
 	def test500_110_infillMax(self):
 		expectedResult = True
