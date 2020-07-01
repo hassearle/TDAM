@@ -29,6 +29,9 @@ class V3DPTestCases(unittest.TestCase):
 	LAYER_HEIGHT_HEADER1 = 'G1 Z(-*\d+\.*\d*) *F*\d*\.*\d*\nG1 E'
 	LAYER_HEIGHT_HEADER2 = 'G1 Z(-*\d+\.*\d*) *F*\d*\.*\d*\n'
 	DIGITS = '(\d+\.\d+|\d+)'
+	INFILL_HEADER1 = '; infillPercent = (\d\.\d*|\d+)'
+	INFILL_HEADER2 = '; fill_density = (\d\.\d*|\d+)%'
+	INFILL_VAR = 20.0
 	# MAX_X_SIZE = 228.0
 	# MIN_X_SIZE = 2.0
 	MAX_X_SIZE = 200.0
@@ -242,11 +245,6 @@ class V3DPTestCases(unittest.TestCase):
 		pass
 		#112.5
 
-	# swap 0 and 0.0
-	INFILL_HEADER1 = '; infillPercent = (\d\.\d*|\d+)'
-	INFILL_HEADER2 = '; fill_density = (\d\.\d*|\d+)%'
-	INFILL_VAR = 20.0
-
 	# '[G][1] [X]([0-9]+|[0-9]+.[0-9]+) ([E][0-9]+.[0-9]+ [F][0-9]+|[E][0-9]+.[0-9]+)'
 	# '[G][1] [X]([0-9]+|[0-9]+.[0-9]+) [Y]([0-9]+|[0-9]+.[0-9]+) ([E][0-9]+.[0-9]+ [F][0-9]+|[E][0-9]+.[0-9]+)'
 
@@ -381,6 +379,37 @@ class V3DPTestCases(unittest.TestCase):
 		# # print(statistics.mean(avgInfill))
 		# print("\n")
 
+	MAX_INFILL_VAR = 100.0
+	MIN_INFILL_VAR = 0.0
+
+	def test500_110_infillMax(self):
+		expectedResult = True
+		actualResult = False
+
+		with open(self.GCODE_INPUT, 'r') as f:
+			gCodeInput = f.read()
+
+		m = re.search(self.SLICER_MATTER_SLICE, gCodeInput)
+		n = re.search(self.SLICER_SLIC3R, gCodeInput)
+
+		if m != None:
+			o = re.search(self.INFILL_HEADER1, gCodeInput)
+			infill1 = float(o.group(1))
+			if infill1 > self.INFILL_VAR:
+				actualResult = "Infill Error: value(" + str(infill1) + ") > value(" + str(self.MAX_INFILL_VAR) + ")"
+			else: 
+				actualResult = True
+		elif n != None:
+			p = re.search(self.INFILL_HEADER2, gCodeInput)
+			infill2 = float(p.group(1))
+			if infill2 > self.INFILL_VAR:
+				actualResult = "Infill Error: value(" + str(infill2) + ") > value(" + str(self.MAX_INFILL_VAR) + ")"
+			else:
+				actualResult = True
+		else:
+			actualResult = "Unknown slicer. Unable to determine infill density"
+
+		self.assertEqual(expectedResult, actualResult)
 
 # if wrong type:fill continue and skip
 # if type:fill: save to list
