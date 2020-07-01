@@ -210,10 +210,8 @@ class V3DPTestCases(unittest.TestCase):
 		m = re.findall(header, gCodeInput)
 		mLength = len(m)
 		previous = next_ = None
-		print(m)
 		for index, element in enumerate(m):
 			current = float(element)
-			print("current: " + str(current))
 			if index < 1:
 				# skip because 1st layer height may be different
 				continue
@@ -235,10 +233,6 @@ class V3DPTestCases(unittest.TestCase):
 				next_ = float(m[index + 1])
 				diff2 = round(next_ - current, 3)
 				if diff2 != 0.0 and diff2 != self.LAYER_HEIGHT:
-					print("\ntwo")
-					print("current: " + str(current))
-					print("next: "  + str(next_))
-					print("diff: " + str(diff2))
 					actualResult = "layer height error: value(" + str(next_) + ") != value(" + str(self.LAYER_HEIGHT) + ")"
 					break
 			actualResult = True
