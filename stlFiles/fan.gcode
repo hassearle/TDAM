@@ -7,9 +7,9 @@
 ; automatic settings before start_gcode
 G21 ; set units to millimeters
 M107 ; fan off
-M140 S25 ; start heating the bed
+M140 S35 ; start heating the bed
 M104 T0 S210 ; start heating T0
-M190 S25 ; wait for bed temperature to be reached
+M190 S35 ; wait for bed temperature to be reached
 T0 ; set the active extruder to 0
 ; settings from start_gcode
 G28 X0 Y0 Z0 ; home all axes
@@ -116816,7 +116816,7 @@ M84     ; disable motors
 ; MergeOverlappingLines = True
 ; fillThinGaps = True
 ; continuousSpiralOuterPerimeter = False
-; startCode = ; automatic settings before start_gcode\nG21 ; set units to millimeters\nM107 ; fan off\nM140 S25 ; start heating the bed\nM104 T0 S210 ; start heating T0\nM190 S25 ; wait for bed temperature to be reached\nT0 ; set the active extruder to 0\n; settings from start_gcode\nG28 X0 Y0 Z0 ; home all axes\nG1 Z5 F5000 ; lift nozzle\nM109 S210 ; set the extruder temp and wait\nG28 X0 Y0 Z0 ; Home Z again in case there was filament on nozzle\nG29 ; probe the bed\n; automatic settings after start_gcode\nT0 ; set the active extruder to 0\nG90 ; use absolute coordinates\nG92 E0 ; reset the expected extruder position\nM82 ; use absolute distance for extrusion
+; startCode = ; automatic settings before start_gcode\nG21 ; set units to millimeters\nM107 ; fan off\nM140 S35 ; start heating the bed\nM104 T0 S210 ; start heating T0\nM190 S35 ; wait for bed temperature to be reached\nT0 ; set the active extruder to 0\n; settings from start_gcode\nG28 X0 Y0 Z0 ; home all axes\nG1 Z5 F5000 ; lift nozzle\nM109 S210 ; set the extruder temp and wait\nG28 X0 Y0 Z0 ; Home Z again in case there was filament on nozzle\nG29 ; probe the bed\n; automatic settings after start_gcode\nT0 ; set the active extruder to 0\nG90 ; use absolute coordinates\nG92 E0 ; reset the expected extruder position\nM82 ; use absolute distance for extrusion
 ; layerChangeCode = ; LAYER:[layer_num]
 ; infillPercent = 20
 ; perimeterStartEndOverlapRatio = 0.9
