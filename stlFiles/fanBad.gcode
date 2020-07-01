@@ -116817,7 +116817,7 @@ M84     ; disable motors
 ; continuousSpiralOuterPerimeter = False
 ; startCode = ; automatic settings before start_gcode\nG21 ; set units to millimeters\nM107 ; fan off\nM140 S25 ; start heating the bed\nM104 T0 S210 ; start heating T0\nM190 S25 ; wait for bed temperature to be reached\nT0 ; set the active extruder to 0\n; settings from start_gcode\nG28 X0 Y0 Z0 ; home all axes\nG1 Z5 F5000 ; lift nozzle\nM109 S210 ; set the extruder temp and wait\nG28 X0 Y0 Z0 ; Home Z again in case there was filament on nozzle\nG29 ; probe the bed\n; automatic settings after start_gcode\nT0 ; set the active extruder to 0\nG90 ; use absolute coordinates\nG92 E0 ; reset the expected extruder position\nM82 ; use absolute distance for extrusion
 ; layerChangeCode = ; LAYER:[layer_num]
-; infillPercent = 300
+; infillPercent = -10
 ; perimeterStartEndOverlapRatio = 0.9
 ; raftExtruder = -1
 ; supportExtruder = 0
