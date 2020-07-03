@@ -517,18 +517,18 @@ class V3DPTestCases(unittest.TestCase):
 		except:
 			self.skipTest("Not cmb file")
 		
-		index = 0
+		index_ = 0
 		part_max_X = ""
 		temp = ""
 		hexList = []
 		for line in gCodeInput:
 			for element in line:
 				temp += element
-				if (index + 1) % 2 == 0:
+				if (index_ + 1) % 2 == 0:
 					hexList.append(temp)
 					temp = ""
-				index += 1
-				if index == 200:
+				index_ += 1
+				if index_ == 200:
 					break
 
 		for index, value in enumerate(hexList):
@@ -541,7 +541,7 @@ class V3DPTestCases(unittest.TestCase):
 		floatMaxX_in = ieeeConverter.hex2Float(part_max_X)
 		floatMaxX_mm = floatMaxX_in / 0.0393700787
 		if floatMaxX_mm > self.CMB_MAX_X_SIZE:
-			actualResult = " X value(" + str(floatMaxX_mm) + ") < X-axis bounds(" + str(self.CMB_MAX_X_SIZE) + ")"
+			actualResult = " X value(" + str(floatMaxX_mm) + ") > X-axis bounds(" + str(self.CMB_MAX_X_SIZE) + ")"
 		else:
 			actualResult = False
 
@@ -614,12 +614,12 @@ class V3DPTestCases(unittest.TestCase):
 				if index_ == 200:
 					break
 
-		for index_, value in enumerate(hexList):
-			if index_ >= 54 and index_ <= 57:
+		for index, value in enumerate(hexList):
+			if index >= 54 and index <= 57:
 				part_max_Y = value + part_max_Y
-			elif index_ > 58:
+			elif index > 58:
 				break
-			index_ += 1
+			index += 1
 
 		floatMaxY_in = ieeeConverter.hex2Float(part_max_Y)
 		floatMaxY_mm = floatMaxY_in / 0.0393700787
