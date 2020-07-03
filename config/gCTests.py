@@ -703,7 +703,6 @@ class V3DPTestCases(unittest.TestCase):
 		floatMaxZ_in = ieeeConverter.hex2Float(part_max_Z)
 		floatMaxZ_mm = floatMaxZ_in / 0.0393700787
 		floatMaxZ_mm = round(floatMaxZ_mm)
-		print("\n" + str(floatMaxZ_mm))
 		if floatMaxZ_mm > self.CMB_MAX_Z_SIZE:
 			actualResult = " Z value(" + str(floatMaxZ_mm) + ") > Z-axis bounds(" + str(self.CMB_MAX_Z_SIZE) + ")"
 		else:
