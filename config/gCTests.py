@@ -49,6 +49,7 @@ class V3DPTestCases(unittest.TestCase):
 	# MAX_Z_SIZE = 254.0
 	# MIN_Z_SIZE = 2.0
 	MAX_Z_SIZE = 200.0
+	CMB_MAX_Z_SIZE = 200.0
 	MIN_Z_SIZE = 0.1
 	Z_SIZE_HEADER = 'G1 *X*\d* *Y*\d* Z(-*\d+\.*\d+)'
 
@@ -514,7 +515,7 @@ class V3DPTestCases(unittest.TestCase):
 		with open(self.GCODE_INPUT, 'rb') as f:
 			gCodeInput = f.read().hex()
 		
-		if "some failing string" not in gCodeInput:
+		if ";" in gCodeInput:
 			self.skipTest("Not cmb file")
 		
 		index_ = 0
@@ -595,7 +596,7 @@ class V3DPTestCases(unittest.TestCase):
 		actualResult = True
 		with open(self.GCODE_INPUT, 'rb') as f:
 			gCodeInput = f.read().hex()
-		if "some failing string" not in gCodeInput:
+		if ";" in gCodeInput:
 			self.skipTest("Not cmb file")
 		
 		index_ = 0
@@ -667,6 +668,46 @@ class V3DPTestCases(unittest.TestCase):
 				break
 			elif index == len(m)-1:
 				actualResult = False
+
+		self.assertEqual(expectedResult, actualResult)
+
+	def test600_941_cmb_exceedsMaxZSize(self):
+		expectedResult = False
+		actualResult = True
+		with open(self.GCODE_INPUT, 'rb') as f:
+			gCodeInput = f.read().hex()
+		if ";" in gCodeInput:
+			self.skipTest("Not cmb file")
+		
+		index_ = 0
+		part_max_Z = ""
+		temp = ""
+		hexList = []
+		for line in gCodeInput:
+			for element in line:
+				temp += element
+				if (index_ + 1) % 2 == 0:
+					hexList.append(temp)
+					temp = ""
+				index_ += 1
+				if index_ == 200:
+					break
+
+		for index, value in enumerate(hexList):
+			if index >= 58 and index <= 61:
+				part_max_Z = value + part_max_Z
+			elif index > 62:
+				break
+			index += 1
+
+		floatMaxZ_in = ieeeConverter.hex2Float(part_max_Z)
+		floatMaxZ_mm = floatMaxZ_in / 0.0393700787
+		floatMaxZ_mm = round(floatMaxZ_mm)
+		print("\n" + str(floatMaxZ_mm))
+		if floatMaxZ_mm > self.CMB_MAX_Z_SIZE:
+			actualResult = " Z value(" + str(floatMaxZ_mm) + ") > Z-axis bounds(" + str(self.CMB_MAX_Z_SIZE) + ")"
+		else:
+			actualResult = False
 
 		self.assertEqual(expectedResult, actualResult)
 
