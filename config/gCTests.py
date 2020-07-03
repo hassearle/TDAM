@@ -9,7 +9,7 @@
 import unittest
 import sys
 import re
-import statistics 
+import ieeeConverter
 
 class V3DPTestCases(unittest.TestCase):
 	GCODE_INPUT = ""
@@ -56,8 +56,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test100_900_maxTemp(self):
 		expectedResult = True
 		actualResult = False
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 		m = re.findall(self.TEMP_HEADER1, gCodeInput)
 		for index, element in enumerate(m):
 			i = re.search(self.TEMP_DIGITS, element)
@@ -72,8 +75,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test100_901_maxTemp(self):
 		expectedResult = True
 		actualResult = False
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 		m = re.findall(self.TEMP_HEADER2, gCodeInput)
 		for index, element in enumerate(m):
 			i = re.search(self.TEMP_DIGITS, element)
@@ -88,8 +94,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test100_110_temp(self):
 		expectedResult = True
 		actualResult = False
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 		m = re.findall(self.TEMP_HEADER1, gCodeInput)
 		for index, element in enumerate(m):
 			i = re.search(self.TEMP_DIGITS, element)
@@ -104,8 +113,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test100_111_temp(self):
 		expectedResult = True
 		actualResult = False
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 		m = re.findall(self.TEMP_HEADER2, gCodeInput)
 		for index, element in enumerate(m):
 			i = re.search(self.TEMP_DIGITS, element)
@@ -120,8 +132,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test100_120_bedTemp(self):
 		expectedResult = True
 		actualResult = False
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 		m = re.findall(self.BED_TEMP_HEADER1, gCodeInput)
 		if len(m) == 0:
 			actualResult = True
@@ -138,8 +153,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test100_121_bedTemp(self):
 		expectedResult = True
 		actualResult = False
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 		m = re.findall(self.BED_TEMP_HEADER2, gCodeInput)
 		if len(m) == 0:
 			actualResult = True
@@ -156,8 +174,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test100_930_bedTempMax(self):
 		expectedResult = True
 		actualResult = False
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 		m = re.findall(self.BED_TEMP_HEADER1, gCodeInput)
 		if len(m) == 0:
 			actualResult = True
@@ -174,8 +195,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test100_931_bedTempMax(self):
 		expectedResult = True
 		actualResult = False
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 		m = re.findall(self.BED_TEMP_HEADER2, gCodeInput)
 		if len(m) == 0:
 			actualResult = True
@@ -192,9 +216,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test200_900_fanNeverEngaged(self):
 		expectedResult = True
 		actualResult = False
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
-
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 		m = re.search(self.FAN_HEADER, gCodeInput)
 		actualResult = True if m != None else "fan never engaged"
 		self.assertEqual(expectedResult, actualResult)
@@ -202,10 +228,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test300_100_layerHeight(self):
 		expectedResult = True
 		actualResult = False
-
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
-
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 		header = ''
 		skip = False
 		if self.SLICER_MATTER_SLICE in gCodeInput:
@@ -247,9 +274,10 @@ class V3DPTestCases(unittest.TestCase):
 						break
 				actualResult = True
 		self.assertEqual(expectedResult, actualResult)
+	
 
-	def test400_100_feedRate(self):
-		pass
+	# def test400_100_feedRate(self):
+	# 	pass
 		#112.5
 
 	# '[G][1] [X]([0-9]+|[0-9]+.[0-9]+) ([E][0-9]+.[0-9]+ [F][0-9]+|[E][0-9]+.[0-9]+)'
@@ -258,9 +286,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test500_100_infill(self):
 		expectedResult = True
 		actualResult = False
-
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 
 		m = re.search(self.SLICER_MATTER_SLICE, gCodeInput)
 		n = re.search(self.SLICER_SLIC3R, gCodeInput)
@@ -389,9 +419,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test500_110_infillMax(self):
 		expectedResult = True
 		actualResult = False
-
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 
 		m = re.search(self.SLICER_MATTER_SLICE, gCodeInput)
 		n = re.search(self.SLICER_SLIC3R, gCodeInput)
@@ -418,9 +450,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test500_120_infillMin(self):
 		expectedResult = True
 		actualResult = False
-
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 
 		m = re.search(self.SLICER_MATTER_SLICE, gCodeInput)
 		n = re.search(self.SLICER_SLIC3R, gCodeInput)
@@ -453,8 +487,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test600_900_exceedsMaxXSize(self):
 		expectedResult = False
 		actualResult = True
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 
 		m = re.findall(self.X_SIZE_HEADER, gCodeInput)
 		elementX = None
@@ -468,11 +505,108 @@ class V3DPTestCases(unittest.TestCase):
 
 		self.assertEqual(expectedResult, actualResult)
 
+	CMB_MAX_X_SIZE = 200.0
+
+	def test600_901_cmb_exceedsMaxXSize(self):
+		expectedResult = False
+		actualResult = True
+
+		try:
+			with open(self.GCODE_INPUT, 'rb') as f:
+				gCodeInput = f.read().hex()
+		except:
+			self.skipTest("Not cmb file")
+		
+		index = 0
+		thing = magic_number = machine_type = slice_height = ""
+		part_volume = support_volume = num_of_str_chars1 = ""
+		num_of_str_chars2 = part_material_str = ""
+		support_material_str = part_min_X = part_min_Y = ""
+		part_min_Z = part_max_X = part_max_Y = part_max_Z = ""
+
+		temp = ""
+		hexList = []
+		for line in gCodeInput:
+			for element in line:
+				temp += element
+				if (index + 1) % 2 == 0:
+					hexList.append(temp)
+					temp = ""
+				index += 1
+
+		for index, value in enumerate(hexList):
+			# print(str(index) + ": " + str(value))
+
+			if index >= 0 and index <= 3:
+				magic_number += value
+			elif index >= 4 and index <= 7:
+				machine_type += value
+			elif index >= 8 and index <= 11:
+				slice_height += value
+			elif index >= 12 and index <= 15:
+				part_volume += value
+			elif index >= 16 and index <= 19:
+				support_volume += value
+			elif index >= 20 and index <= 23:
+				num_of_str_chars1 += value
+			# elif index == 23:
+			# 	num_of_str_chars = int(num_of_str_chars)
+			elif index >= 24 and index <= 27:
+				part_material_str += value
+			elif index >= 28 and index <= 31:
+				num_of_str_chars2 += value
+			elif index >= 32 and index <= 37:
+				support_material_str += value
+			elif index >= 38 and index <= 41:
+				part_min_X = value + part_min_X
+			elif index >= 42 and index <= 45:
+				part_min_Y = value + part_min_Y
+			elif index >= 46 and index <= 49:
+				part_min_Z = value + part_min_Z
+			elif index >= 50 and index <= 53:
+				part_max_X = value + part_max_X
+			elif index >= 54 and index <= 57:
+				part_max_Y = value + part_max_Y
+			elif index >= 58 and index <= 61:
+				part_max_Z = value + part_max_Z
+			index += 1
+
+
+		# print(magic_number)
+			# print(machine_type)
+			# print(slice_height)
+			# print(part_volume)
+			# print(support_volume)
+			# print(num_of_str_chars1)
+			# print(part_material_str)
+			# print(num_of_str_chars2)
+			# print(support_material_str)
+			# print(part_min_X)
+			# print(part_min_Y)
+			# print(part_min_Z)
+			# print(part_max_X)
+			# print(part_max_Y)
+			# print(part_max_Z)
+
+		floatMaxX_in = ieeeConverter.hex2Float(part_max_X)
+		floatMaxX_mm = floatMaxX_in / 0.0393700787
+		if floatMaxX_mm > self.CMB_MAX_X_SIZE:
+			actualResult = " X value(" + str(floatMaxX_mm) + ") < X-axis bounds(" + str(self.CMB_MAX_X_SIZE) + ")"
+		else:
+			actualResult = False
+
+		self.assertEqual(expectedResult, actualResult)
+
+
+
 	def test600_910_exceedsMinXSize(self):
 		expectedResult = False
 		actualResult = True
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 
 		m = re.findall(self.X_SIZE_HEADER, gCodeInput)
 		elementX = None
@@ -490,8 +624,12 @@ class V3DPTestCases(unittest.TestCase):
 	def test600_920_exceedsMaxYSize(self):
 		expectedResult = False
 		actualResult = True
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
+
 		m = re.findall(self.Y_SIZE_HEADER, gCodeInput)
 		elementY = None
 		for index, element in enumerate(m):
@@ -507,8 +645,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test600_930_exceedsMinYSize(self):
 		expectedResult = False
 		actualResult = True
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 
 		m = re.findall(self.Y_SIZE_HEADER, gCodeInput)
 		elementY = None
@@ -520,14 +661,17 @@ class V3DPTestCases(unittest.TestCase):
 				break
 			elif index == len(m)-1:
 				actualResult = False
-
 		self.assertEqual(expectedResult, actualResult)
 
 	def test600_940_exceedsMaxZSize(self):
 		expectedResult = False
 		actualResult = True
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
+
 		m = re.findall(self.Z_SIZE_HEADER, gCodeInput)
 		elementZ = None
 		for index, element in enumerate(m):
@@ -543,8 +687,11 @@ class V3DPTestCases(unittest.TestCase):
 	def test600_950_exceedsMinZSize(self):
 		expectedResult = False
 		actualResult = True
-		with open(self.GCODE_INPUT, 'r') as f:
-			gCodeInput = f.read()
+		try:
+			with open(self.GCODE_INPUT, 'r') as f:
+				gCodeInput = f.read()
+		except:
+			self.skipTest("Not G-Code file")
 
 		m = re.findall(self.Z_SIZE_HEADER, gCodeInput)
 		elementZ = None
