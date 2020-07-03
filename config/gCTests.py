@@ -43,6 +43,7 @@ class V3DPTestCases(unittest.TestCase):
 	# MAX_Y_SIZE = 254.0
 	# MIN_Y_SIZE = 2.0
 	MAX_Y_SIZE = 200.0
+	CMB_MAX_Y_SIZE = 200.0
 	MIN_Y_SIZE = 0.1
 	Y_SIZE_HEADER = 'G1 X*\d*\.*\d* *[Y](-*\d+.\d+|\d+)'
 	# MAX_Z_SIZE = 254.0
@@ -546,8 +547,6 @@ class V3DPTestCases(unittest.TestCase):
 
 		self.assertEqual(expectedResult, actualResult)
 
-
-
 	def test600_910_exceedsMinXSize(self):
 		expectedResult = False
 		actualResult = True
@@ -588,6 +587,46 @@ class V3DPTestCases(unittest.TestCase):
 				break
 			elif index == len(m)-1:
 				actualResult = False
+
+		self.assertEqual(expectedResult, actualResult)
+
+	def test600_921_cmb_exceedsMaxYSize(self):
+		expectedResult = False
+		actualResult = True
+
+		try:
+			with open(self.GCODE_INPUT, 'rb') as f:
+				gCodeInput = f.read().hex()
+		except:
+			self.skipTest("Not cmb file")
+		
+		index_ = 0
+		part_max_Y = ""
+		temp = ""
+		hexList = []
+		for line in gCodeInput:
+			for element in line:
+				temp += element
+				if (index_ + 1) % 2 == 0:
+					hexList.append(temp)
+					temp = ""
+				index_ += 1
+				if index_ == 200:
+					break
+
+		for index_, value in enumerate(hexList):
+			if index_ >= 54 and index_ <= 57:
+				part_max_Y = value + part_max_Y
+			elif index_ > 58:
+				break
+			index_ += 1
+
+		floatMaxY_in = ieeeConverter.hex2Float(part_max_Y)
+		floatMaxY_mm = floatMaxY_in / 0.0393700787
+		if floatMaxY_mm > self.CMB_MAX_Y_SIZE:
+			actualResult = " Y value(" + str(floatMaxY_mm) + ") > Y-axis bounds(" + str(self.CMB_MAX_Y_SIZE) + ")"
+		else:
+			actualResult = False
 
 		self.assertEqual(expectedResult, actualResult)
 
