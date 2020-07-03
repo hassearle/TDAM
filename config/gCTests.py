@@ -511,10 +511,10 @@ class V3DPTestCases(unittest.TestCase):
 		expectedResult = False
 		actualResult = True
 
-		try:
-			with open(self.GCODE_INPUT, 'rb') as f:
-				gCodeInput = f.read().hex()
-		except:
+		with open(self.GCODE_INPUT, 'rb') as f:
+			gCodeInput = f.read().hex()
+		
+		if "some failing string" not in gCodeInput:
 			self.skipTest("Not cmb file")
 		
 		index_ = 0
@@ -593,11 +593,9 @@ class V3DPTestCases(unittest.TestCase):
 	def test600_921_cmb_exceedsMaxYSize(self):
 		expectedResult = False
 		actualResult = True
-
-		try:
-			with open(self.GCODE_INPUT, 'rb') as f:
-				gCodeInput = f.read().hex()
-		except:
+		with open(self.GCODE_INPUT, 'rb') as f:
+			gCodeInput = f.read().hex()
+		if "some failing string" not in gCodeInput:
 			self.skipTest("Not cmb file")
 		
 		index_ = 0
