@@ -16,8 +16,9 @@ class V3DPTestCases(unittest.TestCase):
 	GCODE_PATH = ""
 	GCODE_INPUT = ""
 	SKIP_TEST = None
-	TEMP_HEADER1 = '(?<=M104)(.*)'
-	TEMP_HEADER2 = '(?<=M109)(.*)'
+	TEMP_HEADER1 = 'M104 S(\d+)'
+	# '(?<=M104)(.*)'
+	TEMP_HEADER2 = 'M109 S(\d+)'
 	TEMP_DIGITS = '(?<=S)([0-9]+|[0])'
 	BED_TEMP_HEADER1 = '[M][1][4][0] [S]([0-9]+)'
 	BED_TEMP_HEADER2 = '[M][1][9][0] [S]([0-9]+)'
@@ -65,9 +66,8 @@ class V3DPTestCases(unittest.TestCase):
 		actualResult = False
 
 		m = re.findall(self.TEMP_HEADER1, self.GCODE_INPUT)
-		for index, element in enumerate(m):
-			i = re.search(self.TEMP_DIGITS, element)
-			current = float(i.group(0))
+		for element in m:
+			current = float(element)
 			if current > self.MAX_TEMP_VAR:
 				actualResult = "Extruder Temp Error: value(" + str(current) + ") > bounds(" + str(self.MAX_TEMP_VAR) + ")"
 				break
@@ -95,9 +95,8 @@ class V3DPTestCases(unittest.TestCase):
 		actualResult = False
 		
 		m = re.findall(self.TEMP_HEADER2, self.GCODE_INPUT)
-		for index, element in enumerate(m):
-			i = re.search(self.TEMP_DIGITS, element)
-			current = float(i.group(0))
+		for element in m:
+			current = float(element)
 			if current > self.MAX_TEMP_VAR:
 				actualResult = "Extruder Temp Error: value(" + str(current) + ") > bounds(" + str(self.MAX_TEMP_VAR) + ")"
 				break
@@ -125,9 +124,8 @@ class V3DPTestCases(unittest.TestCase):
 		actualResult = False
 		
 		m = re.findall(self.TEMP_HEADER1, self.GCODE_INPUT)
-		for index, element in enumerate(m):
-			i = re.search(self.TEMP_DIGITS, element)
-			current = float(i.group(0))
+		for element in m:
+			current = float(element)
 			if current != 0 and current != self.TEMP_VAR:
 				actualResult = "Extruder Temp Error: value(" + str(current) + ") != value(" + str(self.TEMP_VAR) + ")"
 				break
@@ -136,28 +134,27 @@ class V3DPTestCases(unittest.TestCase):
 		self.assertEqual(expectedResult, actualResult)
 
 	# def test100_110_temp(self):
-	# 	expectedResult = True
-	# 	actualResult = False
-		
-	# 	m = re.findall(self.TEMP_HEADER1, self.GCODE_INPUT)
-	# 	for index, element in enumerate(m):
-	# 		i = re.search(self.TEMP_DIGITS, element)
-	# 		current = float(i.group(0))
-	# 		if current == 0 or current == self.TEMP_VAR:
-	# 			actualResult = True
-	# 		else:
-	# 			actualResult = False
-	# 			break
-	# 	self.assertEqual(expectedResult, actualResult)
+		# 	expectedResult = True
+		# 	actualResult = False
+			
+		# 	m = re.findall(self.TEMP_HEADER1, self.GCODE_INPUT)
+		# 	for index, element in enumerate(m):
+		# 		i = re.search(self.TEMP_DIGITS, element)
+		# 		current = float(i.group(0))
+		# 		if current == 0 or current == self.TEMP_VAR:
+		# 			actualResult = True
+		# 		else:
+		# 			actualResult = False
+		# 			break
+		# 	self.assertEqual(expectedResult, actualResult)
 
 	def test100_911_temp(self):
 		expectedResult = True
 		actualResult = False
 		
 		m = re.findall(self.TEMP_HEADER2, self.GCODE_INPUT)
-		for index, element in enumerate(m):
-			i = re.search(self.TEMP_DIGITS, element)
-			current = float(i.group(0))
+		for element in m:
+			current = float(element)
 			if current != 0 and current != self.TEMP_VAR:
 				actualResult = "Extruder Temp Error: value(" + str(current) + ") != value(" + str(self.TEMP_VAR) + ")"
 				break
