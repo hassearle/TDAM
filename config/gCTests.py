@@ -37,6 +37,7 @@ class V3DPTestCases(unittest.TestCase):
 	MAX_BED_TEMP_VAR = p.MAX_BED_TEMP_VAR
 	LAYER_HEIGHT = p.LAYER_HEIGHT_VAR
 	FAN_VAR = p.FAN_VAR
+	MAX_FAN_VAR = p.MAX_FAN_VAR
 	INFILL_VAR = p.INFILL_VAR
 	MAX_INFILL_VAR = p.MAX_INFILL_VAR
 	MIN_INFILL_VAR = p.MIN_INFILL_VAR
@@ -325,11 +326,24 @@ class V3DPTestCases(unittest.TestCase):
 		actualResult = False
 		
 		m = re.findall(self.FAN_HEADER, self.GCODE_INPUT)
-		print(m)
 		for element in m:
 			current = float(element)
 			if current != 0 and current != self.FAN_VAR:
 				actualResult = "Fan Value Error: value(" + str(current) + ") != value(" + str(self.FAN_VAR) + ")"
+				break
+			else:
+				actualResult = True
+		self.assertEqual(expectedResult, actualResult)
+
+	def test200_920_fanMax(self):
+		expectedResult = True
+		actualResult = False
+		
+		m = re.findall(self.FAN_HEADER, self.GCODE_INPUT)
+		for element in m:
+			current = float(element)
+			if current > self.MAX_FAN_VAR:
+				actualResult = "Fan Value Error: value(" + str(current) + ") > max value(" + str(self.FAN_VAR) + ")"
 				break
 			else:
 				actualResult = True

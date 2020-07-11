@@ -28,7 +28,7 @@ M82 ; use absolute distance for extrusion
 ; LAYER_HEIGHT:0.3
 ; TYPE:FILL
 M400
-M106 S127
+M106 S300
 G1 X0 Y0 Z0.8 F9000
 G1 X45.01 Y75.91
 G1 X48.3 Y76.99
