@@ -326,13 +326,16 @@ class V3DPTestCases(unittest.TestCase):
 		actualResult = False
 		
 		m = re.findall(self.FAN_HEADER, self.GCODE_INPUT)
-		for element in m:
-			current = float(element)
-			if current != 0 and current != self.FAN_VAR:
-				actualResult = "Fan Value Error: value(" + str(current) + ") != value(" + str(self.FAN_VAR) + ")"
-				break
-			else:
-				actualResult = True
+		if len(m) == 0:
+			actualResult = True
+		else:
+			for element in m:
+				current = float(element)
+				if current != 0 and current != self.FAN_VAR:
+					actualResult = "Fan Value Error: value(" + str(current) + ") != value(" + str(self.FAN_VAR) + ")"
+					break
+				else:
+					actualResult = True
 		self.assertEqual(expectedResult, actualResult)
 
 	def test200_920_fanMax(self):
@@ -340,22 +343,17 @@ class V3DPTestCases(unittest.TestCase):
 		actualResult = False
 		
 		m = re.findall(self.FAN_HEADER, self.GCODE_INPUT)
-		for element in m:
-			current = float(element)
-			if current > self.MAX_FAN_VAR:
-				actualResult = "Fan Value Error: value(" + str(current) + ") > max value(" + str(self.FAN_VAR) + ")"
-				break
-			else:
-				actualResult = True
+		if len(m) == 0:
+			actualResult = True
+		else:
+			for element in m:
+				current = float(element)
+				if current > self.MAX_FAN_VAR:
+					actualResult = "Fan Value Error: value(" + str(current) + ") > max value(" + str(self.FAN_VAR) + ")"
+					break
+				else:
+					actualResult = True
 		self.assertEqual(expectedResult, actualResult)
-
-	# def test200_100_fanNeverEngaged(self):
-	# 	expectedResult = True
-	# 	actualResult = False
-		
-	# 	m = re.search(self.FAN_HEADER, self.GCODE_INPUT)
-	# 	actualResult = False if m == None else True
-	# 	self.assertEqual(expectedResult, actualResult)
 
 	def test300_900_layerHeight(self):
 		expectedResult = True
