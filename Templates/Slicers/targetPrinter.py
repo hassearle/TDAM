@@ -1,0 +1,32 @@
+'''
+	author:		Ash Searle	kss0024@auburn.edu
+	created:	7/5/20
+	updated:	7/5/20
+	
+	purpose:	store idividual printer limites to be loaded into TDAM
+'''
+
+# OPERATOR LIMITS
+TEMP_VAR = 210
+BED_TEMP_VAR = 35
+INFILL_VAR = 20.0
+LAYER_HEIGHT_VAR = 0.3
+FAN_VAR = 255
+
+# PRINTER LIMITS
+MAX_TEMP_VAR = 220
+MAX_BED_TEMP_VAR = 65
+MAX_INFILL_VAR = 100.0
+MIN_INFILL_VAR = 0.0
+MAX_FAN_VAR = 255
+MAX_X_SIZE = 200.0
+MIN_X_SIZE = 0.1
+MAX_Y_SIZE = 200.0
+MIN_Y_SIZE = 0.1
+MAX_Z_SIZE = 200.0
+MIN_Z_SIZE = 0.1
+
+# CMB FILE PRINTER LIMITS
+CMB_MAX_X_SIZE = 200.0
+CMB_MAX_Y_SIZE = 200.0
+CMB_MAX_Z_SIZE = 200.0
